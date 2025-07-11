@@ -1,8 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Status from './Status.jsx';
 import iconEdit from '../assets/editing.png';
 import inconDel from '../assets/trash.png';
-import { fetchTodo, createTodo, deleteTodo, putTodo } from '../API/http.js';
+import {
+  fetchTodo,
+  createTodo,
+  deleteTodo,
+  putTodo,
+  statsTodo,
+} from '../API/http.js';
 import Error from './Error.jsx';
 
 export default function TodoList() {
@@ -13,38 +19,37 @@ export default function TodoList() {
   const [loading, setLoading] = useState(false); // загрузка
   const [todoEditID, setTodoEditID] = useState(null); //обновление задачи
   const [editText, setEditText] = useState('');
-  const [filtered, setFiltered] = useState([]);
-
-  function todoFilter(status) {
-    if (status === 'all') {
-      setFiltered(todos);
-    } else if (status === 'inWork') {
-      let newTodo = todos.filter((item) => item.isDone === false);
-      setFiltered(newTodo);
-    } else if (status === 'completed') {
-      let newTodo = todos.filter((item) => item.isDone === true);
-      setFiltered(newTodo);
-    }
-  }
+  const [status, setStatus] = useState({});
+  const filterRef = useRef('all');
   useEffect(() => {
     fetchTodos();
+    fetchStatus();
   }, []);
 
-  // Загрузка списка задач
-  const fetchTodos = async () => {
+  //список задач
+  const fetchTodos = async (filter = filterRef.current) => {
     setError('');
     setLoading(true);
     try {
-      const res = await fetchTodo();
+      const res = await fetchTodo(filter);
       setTodos(res.data);
-      setFiltered(res.data);
+      filterRef.current = filter;
       setLoading(false);
     } catch (error) {
       setError(error.message || 'Не удалось загрузить');
     }
   };
 
-  // Валидация ввода
+  const fetchStatus = async () => {
+    try {
+      const data = await statsTodo();
+      setStatus(data);
+    } catch (error) {
+      console.error('Ошибка загрузки', error.message);
+    }
+  };
+
+  // валид ввод
   const validate = (value) => {
     if (!value.trim()) return 'Введите название задачи';
     if (value.trim().length < 2) return 'Минимум 2 символа';
@@ -52,7 +57,7 @@ export default function TodoList() {
     return '';
   };
 
-  // Обработчик отправки формы
+  // обработчик отправки формы
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationError = validate(create);
@@ -68,11 +73,11 @@ export default function TodoList() {
       {
         const addTodo = await createTodo(create);
         setSuccess('Задача создана!');
-        //  неуспешная попытка вывода новой задачи сверху списка
         setTodos((prev) => [addTodo.data, ...todos, ...prev]);
         setCreate('');
       }
-      fetchTodos(); // обновили список задач
+      fetchTodos();
+      fetchStatus();
     } catch (err) {
       setError(err.message);
       setSuccess('');
@@ -84,6 +89,7 @@ export default function TodoList() {
       await deleteTodo(id);
       setSuccess('Задача удалена!');
       fetchTodos();
+      fetchStatus();
     } catch (err) {
       setError(err.message);
       setSuccess('');
@@ -102,6 +108,7 @@ export default function TodoList() {
       setTodoEditID(null);
       setEditText('');
       fetchTodos();
+      fetchStatus();
     } catch (err) {
       setError(err.message);
       setSuccess('');
@@ -119,6 +126,7 @@ export default function TodoList() {
     try {
       await putTodo(todo.id, { isDone: !todo.isDone });
       fetchTodos();
+      fetchStatus();
     } catch (err) {
       setError(err.message);
     }
@@ -138,12 +146,12 @@ export default function TodoList() {
 
       {error && <Error title="Ошибка" message={error} />}
       {success && <p>{success}</p>}
-      <Status todos={todos} onFilter={todoFilter} />
+      <Status onFilter={fetchTodos} status={status} />
       <form className="task">
         {loading ? (
           <h1>Идет загрузка, ожидайте</h1>
         ) : (
-          filtered.map((todo) => (
+          todos.map((todo) => (
             <li key={todo.id} className="todo-item">
               <input
                 type="checkbox"
