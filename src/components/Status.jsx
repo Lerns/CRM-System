@@ -1,3 +1,4 @@
+import './Status.scss';
 export default function Status({ onFilter, status }) {
   return (
     <div>
