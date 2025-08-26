@@ -1,19 +1,5 @@
-import { statsTodo } from '../API/http';
-import { useState, useEffect } from 'react';
-export default function Status({ onFilter }) {
-  const [status, setStatus] = useState({});
-
-  useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const data = await statsTodo();
-        setStatus(data);
-      } catch (error) {
-        console.error('Ошибка загрузки', error.message);
-      }
-    };
-    fetchStatus();
-  }, []);
+import './Status.scss';
+export default function Status({ onFilter, status }) {
   return (
     <div>
       <ul className="status">
