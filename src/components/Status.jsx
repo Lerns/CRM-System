@@ -1,18 +1,18 @@
 import './Status.scss';
-export default function Status({ onFilter, status }) {
+export default function Status({ loadTodos, status }) {
   return (
     <div>
       <ul className="status">
         <li>
-          <button onClick={() => onFilter('all')}>Все({status.all})</button>
+          <button onClick={() => loadTodos('all')}>Все({status.all})</button>
         </li>
         <li>
-          <button onClick={() => onFilter('inWork')}>
+          <button onClick={() => loadTodos('inWork')}>
             В работе({status.inWork})
           </button>
         </li>
         <li>
-          <button onClick={() => onFilter('completed')}>
+          <button onClick={() => loadTodos('completed')}>
             Сделано({status.completed})
           </button>
         </li>

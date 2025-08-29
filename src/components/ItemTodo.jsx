@@ -1,78 +1,65 @@
 import { useState } from 'react';
 import { putTodo, deleteTodo } from '../API/http';
 import './ItemTodo.scss';
+import { validateTodoTitle } from '../helpers/validation';
 import iconEdit from '../assets/editing.png';
 import inconDel from '../assets/trash.png';
-export default function ItemTodo({
-  todo,
-  fetchTodos,
-  fetchStatus,
-  setError,
-  setSuccess,
-}) {
-  const [todoEditID, setTodoEditID] = useState(null);
+export default function ItemTodo({ todo, loadTodos, setError }) {
   const [editText, setEditText] = useState('');
+  const [isEdit, setIsEdit] = useState(false);
 
-  const validate = (value) => {
-    if (!value.trim()) return 'Это поле не может быть пустым';
-    if (value.trim().length < 2) return 'Минимальная длина текста 2 символа';
-    if (value.trim().length > 64) return 'Максимальная длина текста 64 символа';
-    return '';
-  };
-  const togleCompleted = async (todo) => {
-    try {
-      await putTodo(todo.id, { isDone: !todo.isDone });
-      await fetchTodos();
-      await fetchStatus();
-    } catch (err) {
-      setError(err.message || 'Ошибка при изменении статуса');
-    }
-  };
-  const handleSave = async (todo) => {
-    const validationError = validate(editText);
+  const handleSave = async () => {
+    const validationError = validateTodoTitle(editText);
     if (validationError) {
       return setError(validationError);
     }
     try {
       await putTodo(todo.id, { title: editText });
-      setSuccess('Задача обновлена');
-      setTodoEditID(null);
+      setIsEdit(false);
       setEditText('');
-      fetchTodos();
-      fetchStatus();
+      loadTodos();
     } catch (err) {
       setError(err.message || 'Ошибка при обновлении задачи');
     }
   };
 
-  const handleEdit = (todo) => {
-    setTodoEditID(todo.id);
+  const toggleCompleted = async () => {
+    try {
+      await putTodo(todo.id, { isDone: !todo.isDone });
+      await loadTodos();
+    } catch (err) {
+      setError(err.message || 'Ошибка при изменении статуса');
+    }
+  };
+
+  const handleEdit = () => {
+    setIsEdit(true);
     setEditText(todo.title);
   };
+
   const handleCancel = () => {
-    setTodoEditID(null);
+    setIsEdit(false);
     setEditText('');
   };
+
   const removeTodo = async (id) => {
     try {
       await deleteTodo(id);
-      setSuccess('Задача удалена!');
-      fetchTodos();
-      fetchStatus();
+      loadTodos();
     } catch (err) {
       setError(err.message || 'Ошибка при удалении задачи');
-      setSuccess('');
     }
   };
+
   return (
-    <ul>
+    <form>
       <li className="item">
         <input
           type="checkbox"
           checked={todo.isDone}
-          onChange={() => togleCompleted(todo)}
+          onChange={() => toggleCompleted()}
         />
-        {todoEditID == todo.id ? (
+        {isEdit ? (
           <input
             type="text"
             value={editText}
@@ -83,12 +70,12 @@ export default function ItemTodo({
         )}
 
         <div className="buttons">
-          {todoEditID === todo.id ? (
+          {isEdit ? (
             <>
               <button
                 className="save"
                 type="button"
-                onClick={() => handleSave(todo)}
+                onClick={() => handleSave()}
               >
                 Сохранить
               </button>
@@ -102,8 +89,7 @@ export default function ItemTodo({
                 className="edit"
                 type="button"
                 onClick={() => {
-                  if (todo.isDone === true) return;
-                  else if (todo.isDone === false) handleEdit(todo);
+                  handleEdit();
                 }}
               >
                 <img src={iconEdit} alt="edit" />
@@ -119,6 +105,6 @@ export default function ItemTodo({
           )}
         </div>
       </li>
-    </ul>
+    </form>
   );
 }
