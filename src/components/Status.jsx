@@ -1,32 +1,18 @@
-import { statsTodo } from '../API/http';
-import { useState, useEffect } from 'react';
-export default function Status({ onFilter }) {
-  const [status, setStatus] = useState({});
-
-  useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const data = await statsTodo();
-        setStatus(data);
-      } catch (error) {
-        console.error('Ошибка загрузки', error.message);
-      }
-    };
-    fetchStatus();
-  }, []);
+import './Status.scss';
+export default function Status({ loadTodos, status }) {
   return (
     <div>
       <ul className="status">
         <li>
-          <button onClick={() => onFilter('all')}>Все({status.all})</button>
+          <button onClick={() => loadTodos('all')}>Все({status.all})</button>
         </li>
         <li>
-          <button onClick={() => onFilter('inWork')}>
+          <button onClick={() => loadTodos('inWork')}>
             В работе({status.inWork})
           </button>
         </li>
         <li>
-          <button onClick={() => onFilter('completed')}>
+          <button onClick={() => loadTodos('completed')}>
             Сделано({status.completed})
           </button>
         </li>
