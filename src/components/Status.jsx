@@ -1,18 +1,30 @@
 import './Status.scss';
-export default function Status({ loadTodos, status }) {
+
+export default function Status({ loadTodos, status, filterColor }) {
   return (
     <div>
       <ul className="status">
         <li>
-          <button onClick={() => loadTodos('all')}>Все({status.all})</button>
+          <button
+            className={filterColor === 'all' ? 'active' : ''}
+            onClick={() => loadTodos('all')}
+          >
+            Все({status.all})
+          </button>
         </li>
         <li>
-          <button onClick={() => loadTodos('inWork')}>
+          <button
+            className={filterColor === 'inWork' ? 'active' : ''}
+            onClick={() => loadTodos('inWork')}
+          >
             В работе({status.inWork})
           </button>
         </li>
         <li>
-          <button onClick={() => loadTodos('completed')}>
+          <button
+            className={filterColor === 'completed' ? 'active' : ''}
+            onClick={() => loadTodos('completed')}
+          >
             Сделано({status.completed})
           </button>
         </li>

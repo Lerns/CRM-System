@@ -1,7 +1,9 @@
 import { useState } from 'react';
+
 import './TitleTodo.scss';
 import { createTodo } from '../API/http';
 import { validateTodoTitle } from '../helpers/validation';
+
 export default function TitleTodo({ loadTodos, setError }) {
   const [title, setTitle] = useState('');
 

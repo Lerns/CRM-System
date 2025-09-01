@@ -1,12 +1,15 @@
 import { useState } from 'react';
+
 import { putTodo, deleteTodo } from '../API/http';
-import './ItemTodo.scss';
 import { validateTodoTitle } from '../helpers/validation';
+
+import './ItemTodo.scss';
 import iconEdit from '../assets/editing.png';
 import inconDel from '../assets/trash.png';
+
 export default function ItemTodo({ todo, loadTodos, setError }) {
   const [editText, setEditText] = useState('');
-  const [isEdit, setIsEdit] = useState(false);
+  const [editState, setEditState] = useState(false);
 
   const handleSave = async () => {
     const validationError = validateTodoTitle(editText);
@@ -15,7 +18,7 @@ export default function ItemTodo({ todo, loadTodos, setError }) {
     }
     try {
       await putTodo(todo.id, { title: editText });
-      setIsEdit(false);
+      setEditState(false);
       setEditText('');
       loadTodos();
     } catch (err) {
@@ -33,12 +36,12 @@ export default function ItemTodo({ todo, loadTodos, setError }) {
   };
 
   const handleEdit = () => {
-    setIsEdit(true);
+    setEditState(true);
     setEditText(todo.title);
   };
 
   const handleCancel = () => {
-    setIsEdit(false);
+    setEditState(false);
     setEditText('');
   };
 
@@ -57,9 +60,10 @@ export default function ItemTodo({ todo, loadTodos, setError }) {
         <input
           type="checkbox"
           checked={todo.isDone}
-          onChange={() => toggleCompleted()}
+          onChange={toggleCompleted}
         />
-        {isEdit ? (
+
+        {editState ? (
           <input
             type="text"
             value={editText}
@@ -70,7 +74,7 @@ export default function ItemTodo({ todo, loadTodos, setError }) {
         )}
 
         <div className="buttons">
-          {isEdit ? (
+          {editState ? (
             <>
               <button
                 className="save"

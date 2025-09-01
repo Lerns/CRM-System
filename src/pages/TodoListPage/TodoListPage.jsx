@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import Status from '../../components/Status.jsx';
-import { fetchTodo, statsTodo } from '../../API/http.js';
+
 import TitleTodo from '../../components/TitleTodo.jsx';
+import Status from '../../components/Status.jsx';
 import TodoList from '../../components/TodoList.jsx';
-import './TodoListPage.scss';
 import Error from '../../components/Error.jsx';
+
+import { fetchTodo, statsTodo } from '../../API/http.js';
+import './TodoListPage.scss';
+
 export default function TodoListPage() {
   const [todos, setTodos] = useState([]);
   const [error, setError] = useState('');
@@ -35,7 +38,11 @@ export default function TodoListPage() {
   return (
     <>
       <TitleTodo loadTodos={loadTodos} setError={setError} />
-      <Status loadTodos={loadTodos} status={status} />
+      <Status
+        loadTodos={loadTodos}
+        status={status}
+        filterColor={filterRef.current}
+      />
       {error && (
         <Error title="Ошибка" message={error} onClose={() => setError('')} />
       )}
