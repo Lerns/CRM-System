@@ -5,75 +5,8 @@
   width: 30rem;
   margin: 10rem;
   padding: 1rem;
-}
-.form {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-.form button {
-  height: 2rem;
-  width: 5rem;
-  color: white;
-  background-color: rgb(5, 100, 243);
-  border: 0;
-  border-radius: 10%;
-}
-.form input {
-  background-color: transparent;
-  border: 0;
-  border-bottom: 1.5px solid rgba(144, 144, 144, 0.651);
-  height: 1.7rem;
-  width: 20rem;
-}
-ul {
-  padding: 0;
-  list-style: none;
-  display: flex;
-
-  align-items: center;
-  justify-content: space-around;
-}
-.task {
-  display: grid;
-  align-items: center;
-  background-color: white;
-  padding: 20px;
-  border: 1px solid silver;
-}
-.buttons {
-  display: flex;
-  margin-left: auto;
-  gap: 0.5rem;
-}
-.task button {
-  align-items: center;
-  margin: 0.5rem;
-  width: 2rem;
-  height: 2rem;
-  border: 0;
-  border-radius: 10px;
-}
-.task button img {
-  width: 1rem;
-  height: 1rem;
-  object-fit: contain;
-}
-.edit-btn {
-  background-color: rgba(5, 100, 243, 0.514);
-}
-.del {
-  background-color: rgba(255, 63, 63, 0.48);
-}
-.todo-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  border-radius: 8px;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  padding: 1rem;
-  border: 1rem;
-  margin: 0.5rem;
+  text-align: center;
+  margin: 0 auto;
 }
 .error {
   max-width: 40rem;

@@ -1,6 +1,6 @@
 const API = 'https://easydev.club/api/v1';
-export async function fetchTodo() {
-  const response = await fetch(`${API}/todos?filter=all`);
+export async function fetchTodo(filter = 'all') {
+  const response = await fetch(`${API}/todos?filter=${filter}`);
   const resData = await response.json();
 
   if (!response.ok) {
