@@ -1,6 +1,17 @@
+interface StatusProps {
+  loadTodos: (filter: Filter) => Promise<void>;
+  status: Stats;
+  filterColor: Filter;
+}
+
+import type { Filter, Stats } from '../types/todo.js';
 import './Status.scss';
 
-export default function Status({ loadTodos, status, filterColor }) {
+export default function Status({
+  loadTodos,
+  status,
+  filterColor,
+}: StatusProps) {
   return (
     <div>
       <ul className="status">
