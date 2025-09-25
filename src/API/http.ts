@@ -12,7 +12,6 @@ export async function fetchTodo(
 ): Promise<MetaResponse<Todo, Stats>> {
   const response = await fetch(`${API}/todos?filter=${filter}`);
   const resData: MetaResponse<Todo, Stats> = await response.json();
-
   if (!response.ok) {
     throw new Error('Не удалось загрузить');
   }
@@ -22,6 +21,7 @@ export async function fetchTodo(
 export async function statsTodo(): Promise<Stats> {
   const response = await fetch(`${API}/todos?filter=all`);
   const resData: MetaResponse<Todo, Stats> = await response.json();
+
   if (!response.ok) {
     throw new Error('Не удалось загрузить');
   }
@@ -31,7 +31,7 @@ export async function statsTodo(): Promise<Stats> {
   return resData.info;
 }
 
-export async function createTodo(title: TodoRequest): Promise<Todo> {
+export async function createTodo(title: string): Promise<Todo> {
   const response = await fetch(`${API}/todos`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

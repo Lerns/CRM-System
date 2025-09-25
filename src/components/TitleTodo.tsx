@@ -19,8 +19,9 @@ export default function TitleTodo({ loadTodos, setError }: titleTodoProps) {
     if (validationError) {
       return setError(validationError);
     }
+
     try {
-      await createTodo({ title });
+      await createTodo(title);
       setTitle('');
       loadTodos();
       setError('');
