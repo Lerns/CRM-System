@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 
-import TitleTodo from '../../components/TitleTodo.js';
-import Status from '../../components/Status.js';
-import TodoList from '../../components/TodoList.js';
-import Error from '../../components/Error.js';
+import TitleTodo from '../../components/TitleTodo';
+import Status from '../../components/Status';
+import TodoList from '../../components/TodoList';
+import Error from '../../components/Error';
 
-import { fetchTodo, statsTodo } from '../../API/http.js';
-import type { Stats, Filter, Todo } from '../../types/todo.ts';
-import { errorMessage } from '../../helpers/errorMessage.js';
+import { fetchTodo, statsTodo } from '../../API/http';
+import type { Stats, Filter, Todo } from '../../types/todo';
+import { errorMessage } from '../../helpers/errorMessage';
 import './TodoListPage.scss';
 
 export default function TodoListPage() {

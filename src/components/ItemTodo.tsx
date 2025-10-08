@@ -1,12 +1,15 @@
 import { useState } from 'react';
 
-import { putTodo, deleteTodo } from '../API/http.js';
-import { validateTodoTitle } from '../helpers/validation.js';
-import { errorMessage } from '../helpers/errorMessage.js';
-import type { Todo, Filter } from '../types/todo.js';
+import { putTodo, deleteTodo } from '../API/http';
+import { validateTodoTitle } from '../helpers/validation';
+import { errorMessage } from '../helpers/errorMessage';
+import type { Todo, Filter } from '../types/todo';
+
 import './ItemTodo.scss';
+
 import iconEdit from '../assets/editing.png';
 import inconDel from '../assets/trash.png';
+
 interface ItemTodoProps {
   todo: Todo;
   loadTodos: (filter?: Filter) => Promise<void>;

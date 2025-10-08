@@ -1,6 +1,6 @@
-import ItemTodo from './ItemTodo.js';
+import ItemTodo from './ItemTodo';
 import './TodoList.scss';
-import type { Todo, Filter } from '../types/todo.js';
+import type { Todo, Filter } from '../types/todo';
 
 interface TodoListProps {
   todos: Todo[];

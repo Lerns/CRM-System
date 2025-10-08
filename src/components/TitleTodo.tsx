@@ -1,15 +1,17 @@
 import { useState } from 'react';
 
+import { createTodo } from '../API/http';
+import { validateTodoTitle } from '../helpers/validation';
+import { errorMessage } from '../helpers/errorMessage';
+import type { Filter } from '../types/todo';
+
 import './TitleTodo.scss';
-import { createTodo } from '../API/http.js';
-import { validateTodoTitle } from '../helpers/validation.js';
-import { errorMessage } from '../helpers/errorMessage.js';
-import type { Filter } from '../types/todo.js';
 
 interface titleTodoProps {
   loadTodos: (filter?: Filter) => Promise<void>;
   setError: (message: string) => void;
 }
+
 export default function TitleTodo({ loadTodos, setError }: titleTodoProps) {
   const [title, setTitle] = useState<string>('');
 

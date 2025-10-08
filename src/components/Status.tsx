@@ -4,7 +4,7 @@ interface StatusProps {
   filterColor: Filter;
 }
 
-import type { Filter, Stats } from '../types/todo.js';
+import type { Filter, Stats } from '../types/todo';
 import './Status.scss';
 
 export default function Status({
