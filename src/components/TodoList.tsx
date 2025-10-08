@@ -1,7 +1,19 @@
 import ItemTodo from './ItemTodo';
 import './TodoList.scss';
+import type { Todo, Filter } from '../types/todo';
 
-export default function TodoList({ todos, loading, loadTodos, setError }) {
+interface TodoListProps {
+  todos: Todo[];
+  loading: boolean;
+  loadTodos: (filter?: Filter) => Promise<void>;
+  setError: (message: string) => void;
+}
+export default function TodoList({
+  todos,
+  loading,
+  loadTodos,
+  setError,
+}: TodoListProps) {
   return (
     <ul className="task">
       {loading ? (

@@ -2,14 +2,22 @@ import { useState } from 'react';
 
 import { putTodo, deleteTodo } from '../API/http';
 import { validateTodoTitle } from '../helpers/validation';
+import { errorMessage } from '../helpers/errorMessage';
+import type { Todo, Filter } from '../types/todo';
 
 import './ItemTodo.scss';
+
 import iconEdit from '../assets/editing.png';
 import inconDel from '../assets/trash.png';
 
-export default function ItemTodo({ todo, loadTodos, setError }) {
-  const [editText, setEditText] = useState('');
-  const [editState, setEditState] = useState(false);
+interface ItemTodoProps {
+  todo: Todo;
+  loadTodos: (filter?: Filter) => Promise<void>;
+  setError: (message: string) => void;
+}
+export default function ItemTodo({ todo, loadTodos, setError }: ItemTodoProps) {
+  const [editText, setEditText] = useState<string>('');
+  const [editState, setEditState] = useState<boolean>(false);
 
   const handleSave = async () => {
     const validationError = validateTodoTitle(editText);
@@ -21,8 +29,8 @@ export default function ItemTodo({ todo, loadTodos, setError }) {
       setEditState(false);
       setEditText('');
       loadTodos();
-    } catch (err) {
-      setError(err.message || 'Ошибка при обновлении задачи');
+    } catch (err: unknown) {
+      setError(errorMessage(err) || 'Ошибка при обновлении задачи');
     }
   };
 
@@ -31,7 +39,7 @@ export default function ItemTodo({ todo, loadTodos, setError }) {
       await putTodo(todo.id, { isDone: !todo.isDone });
       await loadTodos();
     } catch (err) {
-      setError(err.message || 'Ошибка при изменении статуса');
+      setError(errorMessage(err) || 'Ошибка при изменении статуса');
     }
   };
 
@@ -45,12 +53,12 @@ export default function ItemTodo({ todo, loadTodos, setError }) {
     setEditText('');
   };
 
-  const removeTodo = async (id) => {
+  const removeTodo = async (id: number) => {
     try {
       await deleteTodo(id);
       loadTodos();
     } catch (err) {
-      setError(err.message || 'Ошибка при удалении задачи');
+      setError(errorMessage(err) || 'Ошибка при удалении задачи');
     }
   };
 
