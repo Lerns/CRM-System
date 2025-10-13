@@ -1,23 +1,37 @@
+import type {
+  Todo,
+  TodoRequest,
+  Stats,
+  Filter,
+  MetaResponse,
+} from '../types/todo.js';
 const API = 'https://easydev.club/api/v1';
-export async function fetchTodo(filter = 'all') {
-  const response = await fetch(`${API}/todos?filter=${filter}`);
-  const resData = await response.json();
 
+export async function fetchTodo(
+  filter: Filter = 'all',
+): Promise<MetaResponse<Todo, Stats>> {
+  const response = await fetch(`${API}/todos?filter=${filter}`);
+  const resData: MetaResponse<Todo, Stats> = await response.json();
   if (!response.ok) {
     throw new Error('Не удалось загрузить');
   }
   return resData;
 }
-export async function statsTodo() {
+
+export async function statsTodo(): Promise<Stats> {
   const response = await fetch(`${API}/todos?filter=all`);
-  const resData = await response.json();
+  const resData: MetaResponse<Todo, Stats> = await response.json();
+
   if (!response.ok) {
     throw new Error('Не удалось загрузить');
+  }
+  if (!resData.info) {
+    throw new Error('Нет данных о статусе');
   }
   return resData.info;
 }
 
-export async function createTodo(title) {
+export async function createTodo(title: string): Promise<Todo> {
   const response = await fetch(`${API}/todos`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -28,11 +42,11 @@ export async function createTodo(title) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Ошибка при создании задачи');
   }
-  const resData = await response.json();
+  const resData: Todo = await response.json();
   return resData;
 }
 
-export async function putTodo(id, data) {
+export async function putTodo(id: number, data: TodoRequest): Promise<Todo> {
   const response = await fetch(`${API}/todos/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -42,11 +56,11 @@ export async function putTodo(id, data) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Ошибка при редактировании задачи');
   }
-  const resData = await response.json();
+  const resData: Todo = await response.json();
   return resData;
 }
 
-export async function deleteTodo(id) {
+export async function deleteTodo(id: number): Promise<boolean> {
   const response = await fetch(`${API}/todos/${id}`, {
     method: 'DELETE',
   });

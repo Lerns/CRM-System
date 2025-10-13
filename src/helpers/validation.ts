@@ -1,4 +1,4 @@
-export function validateTodoTitle(value) {
+export function validateTodoTitle(value: string) {
   if (!value.trim()) {
     return 'Это поле не может быть пустым';
   }
