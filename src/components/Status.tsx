@@ -3,9 +3,9 @@ interface StatusProps {
   status: Stats;
   filterColor: Filter;
 }
+import { Flex, Radio, Space } from 'antd';
 
 import type { Filter, Stats } from '../types/todo';
-import './Status.scss';
 
 export default function Status({
   loadTodos,
@@ -13,33 +13,20 @@ export default function Status({
   filterColor,
 }: StatusProps) {
   return (
-    <div>
-      <ul className="status">
-        <li>
-          <button
-            className={filterColor === 'all' ? 'active' : ''}
-            onClick={() => loadTodos('all')}
-          >
-            Все({status.all})
-          </button>
-        </li>
-        <li>
-          <button
-            className={filterColor === 'inWork' ? 'active' : ''}
-            onClick={() => loadTodos('inWork')}
-          >
-            В работе({status.inWork})
-          </button>
-        </li>
-        <li>
-          <button
-            className={filterColor === 'completed' ? 'active' : ''}
-            onClick={() => loadTodos('completed')}
-          >
-            Сделано({status.completed})
-          </button>
-        </li>
-      </ul>
-    </div>
+    <Flex vertical gap="middle">
+      <Radio.Group
+        onChange={(e) => loadTodos(e.target.value)}
+        buttonStyle="solid"
+        size="large"
+      >
+        <Radio.Button value="all">Все({status.all})</Radio.Button>
+
+        <Radio.Button value="inWork">В работе({status.inWork})</Radio.Button>
+
+        <Radio.Button value="completed">
+          Сделано({status.completed})
+        </Radio.Button>
+      </Radio.Group>
+    </Flex>
   );
 }

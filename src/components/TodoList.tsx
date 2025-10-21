@@ -1,5 +1,5 @@
 import ItemTodo from './ItemTodo';
-import './TodoList.scss';
+import { List, Typography } from 'antd';
 import type { Todo, Filter } from '../types/todo';
 
 interface TodoListProps {
@@ -15,9 +15,9 @@ export default function TodoList({
   setError,
 }: TodoListProps) {
   return (
-    <ul className="task">
+    <List>
       {loading ? (
-        <li>Идет загрузка, ожидайте</li>
+        <Typography.Text>Идет загрузка, ожидайте</Typography.Text>
       ) : (
         todos.map((todo) => (
           <ItemTodo
@@ -28,6 +28,6 @@ export default function TodoList({
           />
         ))
       )}
-    </ul>
+    </List>
   );
 }

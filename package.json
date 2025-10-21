@@ -8,9 +8,11 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit" 
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "antd": "^5.27.5",
+    "axios": "^1.12.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "sass": "^1.90.0",

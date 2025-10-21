@@ -8,7 +8,6 @@ import Error from '../../components/Error';
 import { fetchTodo, statsTodo } from '../../API/http';
 import type { Stats, Filter, Todo } from '../../types/todo';
 import { errorMessage } from '../../helpers/errorMessage';
-import './TodoListPage.scss';
 
 export default function TodoListPage() {
   const [todos, setTodos] = useState<Todo[]>([]);

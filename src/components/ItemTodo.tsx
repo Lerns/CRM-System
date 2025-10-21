@@ -4,11 +4,13 @@ import { putTodo, deleteTodo } from '../API/http';
 import { validateTodoTitle } from '../helpers/validation';
 import { errorMessage } from '../helpers/errorMessage';
 import type { Todo, Filter } from '../types/todo';
-
-import './ItemTodo.scss';
-
-import iconEdit from '../assets/editing.png';
-import inconDel from '../assets/trash.png';
+import { Button, Input, Space, Card, Checkbox, Typography } from 'antd';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  SaveOutlined,
+  CloseOutlined,
+} from '@ant-design/icons';
 
 interface ItemTodoProps {
   todo: Todo;
@@ -63,60 +65,60 @@ export default function ItemTodo({ todo, loadTodos, setError }: ItemTodoProps) {
   };
 
   return (
-    <form>
-      <li className="item">
-        <input
-          type="checkbox"
-          checked={todo.isDone}
-          onChange={toggleCompleted}
+    <Card>
+      <Checkbox checked={todo.isDone} onChange={toggleCompleted} />
+
+      {editState ? (
+        <Input
+          type="text"
+          value={editText}
+          onChange={(e) => setEditText(e.target.value)}
         />
+      ) : (
+        <Typography.Text>{todo.title}</Typography.Text>
+      )}
 
+      <Space>
         {editState ? (
-          <input
-            type="text"
-            value={editText}
-            onChange={(e) => setEditText(e.target.value)}
-          />
+          <>
+            <Button
+              type="primary"
+              size="small"
+              icon={<SaveOutlined />}
+              onClick={() => handleSave()}
+            >
+              Сохранить
+            </Button>
+            <Button
+              type="primary"
+              danger
+              icon={<CloseOutlined />}
+              size="small"
+              onClick={handleCancel}
+            >
+              Отмена
+            </Button>
+          </>
         ) : (
-          <span className={todo.isDone ? 'done' : ''}>{todo.title}</span>
+          <>
+            <Button
+              type="primary"
+              icon={<EditOutlined />}
+              size="small"
+              onClick={() => {
+                handleEdit();
+              }}
+            ></Button>
+            <Button
+              type="primary"
+              danger
+              icon={<DeleteOutlined />}
+              size="small"
+              onClick={() => removeTodo(todo.id)}
+            ></Button>
+          </>
         )}
-
-        <div className="buttons">
-          {editState ? (
-            <>
-              <button
-                className="save"
-                type="button"
-                onClick={() => handleSave()}
-              >
-                Сохранить
-              </button>
-              <button className="cancel" type="button" onClick={handleCancel}>
-                Отмена
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className="edit"
-                type="button"
-                onClick={() => {
-                  handleEdit();
-                }}
-              >
-                <img src={iconEdit} alt="edit" />
-              </button>
-              <button
-                className="del"
-                type="button"
-                onClick={() => removeTodo(todo.id)}
-              >
-                <img src={inconDel} alt="удалить" />
-              </button>
-            </>
-          )}
-        </div>
-      </li>
-    </form>
+      </Space>
+    </Card>
   );
 }
