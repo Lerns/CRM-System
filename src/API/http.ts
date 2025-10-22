@@ -1,15 +1,18 @@
-import axios from 'axios';
+import axios from "axios";
 import type {
   Todo,
   TodoRequest,
   Stats,
   Filter,
   MetaResponse,
-} from '../types/todo.js';
-const API = 'https://easydev.club/api/v1';
+} from "../types/todo.js";
+const API = axios.create({
+  baseURL: "https://easydev.club/api/v1",
+  timeout: 5000,
+});
 
 export async function fetchTodo(
-  filter: Filter = 'all',
+  filter: Filter = "all"
 ): Promise<MetaResponse<Todo, Stats>> {
   const response = await axios.get(`${API}/todos?filter=${filter}`);
   return response.data;
@@ -17,10 +20,10 @@ export async function fetchTodo(
 
 export async function statsTodo(): Promise<Stats> {
   const response = await axios.get<MetaResponse<Todo, Stats>>(
-    `${API}/todos?filter=all`,
+    `${API}/todos?filter=all`
   );
   if (!response.data.info) {
-    throw new Error('Нет данных о статусе');
+    throw new Error("Нет данных о статусе");
   }
   return response.data.info;
 }

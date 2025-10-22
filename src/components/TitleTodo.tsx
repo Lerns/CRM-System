@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { createTodo } from '../API/http';
-import { errorMessage } from '../helpers/errorMessage';
-import type { Filter } from '../types/todo';
+import { createTodo } from "../API/http";
+import { errorMessage } from "../helpers/errorMessage";
+import type { Filter } from "../types/todo";
 
-import { Form, Input, Button, Space } from 'antd';
+import { Form, Input, Button, Space } from "antd";
 
 interface titleTodoProps {
   loadTodos: (filter?: Filter) => Promise<void>;
@@ -12,16 +12,16 @@ interface titleTodoProps {
 }
 
 export default function TitleTodo({ loadTodos, setError }: titleTodoProps) {
-  const [title, setTitle] = useState<string>('');
+  const [title, setTitle] = useState<string>("");
 
   const handleSubmit = async (value: { title: string }) => {
     try {
       await createTodo(value.title);
-      setTitle('');
+      setTitle("");
       loadTodos();
-      setError('');
+      setError("");
     } catch (err: unknown) {
-      setError(errorMessage(err) || 'Ошибка');
+      setError(errorMessage(err) || "Ошибка");
     }
   };
 
@@ -32,22 +32,22 @@ export default function TitleTodo({ loadTodos, setError }: titleTodoProps) {
         rules={[
           {
             required: true,
-            message: 'Это поле не может быть пустым ',
+            message: "Это поле не может быть пустым ",
             transform: (value: string) => value.trim(),
           },
           {
             min: 2,
-            message: 'Минимальная длина текста 2 символа',
+            message: "Минимальная длина текста 2 символа",
             transform: (value: string) => value.trim(),
           },
           {
             max: 64,
-            message: 'Максимальная длина текста 64 символа',
+            message: "Максимальная длина текста 64 символа",
             transform: (value: string) => value.trim(),
           },
         ]}
       >
-        <Space.Compact style={{ width: '100%' }}>
+        <Space.Compact style={{ width: "100%" }}>
           <Input
             placeholder="Task To Be Done..."
             onChange={(e) => setTitle(e.target.value)}
