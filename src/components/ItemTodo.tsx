@@ -66,7 +66,7 @@ export default function ItemTodo({ todo, loadTodos, setError }: ItemTodoProps) {
 
   return (
     <Card>
-      <Checkbox checked={todo.isDone} onChange={toggleCompleted} />
+      <Checkbox name='checkbox' checked={todo.isDone} onChange={toggleCompleted} />
 
       {editState ? (
         <Input

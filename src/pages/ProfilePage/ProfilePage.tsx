@@ -1,3 +1,5 @@
+import { Typography } from 'antd';
+
 export default function ProfilePage() {
-  return <div>Привет</div>;
+  return <Typography>Привет</Typography>;
 }

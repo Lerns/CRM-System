@@ -1,19 +1,19 @@
-import { createBrowserRouter } from "react-router-dom";
-import { TodoListPage } from "../pages/TodoListPage/TodoListPage";
-import { ProfilePage } from "../pages/ProfilePage/ProfilePage";
-import Layout from "./components/Layout";
+import { createBrowserRouter } from 'react-router-dom';
+import TodoListPage from '../src/pages/TodoListPage/TodoListPage';
+import ProfilePage from '../src/pages/ProfilePage/ProfilePage';
+import RootLayout from './components/RootLayout';
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Layout />,
+    path: '/',
+    element: <RootLayout />,
     children: [
       {
-        path: "/",
+        path: '/',
         element: <TodoListPage />,
       },
       {
-        path: "/profile",
+        path: '/profile',
         element: <ProfilePage />,
       },
     ],

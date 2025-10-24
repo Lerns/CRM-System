@@ -38,6 +38,10 @@ export default function TodoListPage() {
 
   useEffect(() => {
     loadTodos();
+    const interval = setInterval(() => {
+      loadTodos();
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   return (

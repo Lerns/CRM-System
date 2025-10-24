@@ -9,25 +9,26 @@ interface TodoListProps {
   setError: (message: string) => void;
 }
 export default function TodoList({
-  todos,
+  todos = [],
   loading,
   loadTodos,
   setError,
 }: TodoListProps) {
+  if (loading)
+    return <Typography.Text>Идет загрузка, ожидайте</Typography.Text>;
+  if (todos.length === 0)
+    return <Typography.Text>Нет задач для отображения</Typography.Text>;
+
   return (
     <List>
-      {loading ? (
-        <Typography.Text>Идет загрузка, ожидайте</Typography.Text>
-      ) : (
-        todos.map((todo) => (
-          <ItemTodo
-            key={todo.id}
-            todo={todo}
-            loadTodos={loadTodos}
-            setError={setError}
-          />
-        ))
-      )}
+      {todos.map((todo) => (
+        <ItemTodo
+          key={todo.id}
+          todo={todo}
+          loadTodos={loadTodos}
+          setError={setError}
+        />
+      ))}
     </List>
   );
 }
