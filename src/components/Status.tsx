@@ -1,20 +1,18 @@
+import { Flex, Radio } from 'antd';
+
+import type { Filter, Stats } from '../types/todo';
+
 interface StatusProps {
   loadTodos: (filter: Filter) => Promise<void>;
   status: Stats;
   filterColor: Filter;
 }
-import { Flex, Radio, Space } from 'antd';
 
-import type { Filter, Stats } from '../types/todo';
-
-export default function Status({
-  loadTodos,
-  status,
-  filterColor,
-}: StatusProps) {
+export default function Status({ loadTodos, status }: StatusProps) {
   return (
     <Flex vertical gap="middle">
       <Radio.Group
+        name="status"
         onChange={(e) => loadTodos(e.target.value)}
         buttonStyle="solid"
         size="large"
