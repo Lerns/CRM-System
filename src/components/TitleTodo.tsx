@@ -34,7 +34,7 @@ export default function TitleTodo({ loadTodos, setError }: titleTodoProps) {
       onFinish={handleSubmit}
     >
       <Form.Item
-        name="input"
+        name="title"
         rules={[
           {
             required: true,

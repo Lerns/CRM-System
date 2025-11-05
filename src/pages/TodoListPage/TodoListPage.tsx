@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 import TitleTodo from '../../components/TitleTodo';
 import Status from '../../components/Status';
@@ -20,7 +20,7 @@ export default function TodoListPage() {
   });
   const filterRef = useRef<Filter>('all');
 
-  const loadTodos = async (filter: Filter = filterRef.current) => {
+  const loadTodos = useCallback(async (filter: Filter = filterRef.current) => {
     try {
       setLoading(true);
       const res = await fetchTodo(filter);
@@ -34,15 +34,14 @@ export default function TodoListPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    loadTodos();
-    /* const interval = setInterval(() => {
+    const interval = setInterval(() => {
       loadTodos();
     }, 5000);
-    return () => clearInterval(interval) */
-  }, []);
+    return () => clearInterval(interval);
+  }, [loadTodos]);
 
   return (
     <>

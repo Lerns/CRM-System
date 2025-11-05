@@ -20,15 +20,13 @@ export default function TodoList({
     return <Typography.Text>Нет задач для отображения</Typography.Text>;
 
   return (
-    <List>
-      {todos.map((todo) => (
-        <ItemTodo
-          key={todo.id}
-          todo={todo}
-          loadTodos={loadTodos}
-          setError={setError}
-        />
-      ))}
-    </List>
+    <List
+      dataSource={todos}
+      renderItem={(todo: Todo) => (
+        <List.Item key={todo.id}>
+          <ItemTodo todo={todo} loadTodos={loadTodos} setError={setError} />
+        </List.Item>
+      )}
+    />
   );
 }
