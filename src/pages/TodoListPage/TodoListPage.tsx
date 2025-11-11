@@ -49,7 +49,6 @@ export default function TodoListPage() {
       <Status
         loadTodos={loadTodos}
         status={status}
-        filterColor={filterRef.current}
       />
       {error && (
         <Error title="Ошибка" message={error} onClose={() => setError('')} />

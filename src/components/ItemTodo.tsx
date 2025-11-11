@@ -64,7 +64,7 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
     <Card>
       <Flex align="center" justify="space-between" gap="small">
         <Flex align="center" gap="small" flex={1}>
-          <Checkbox onChange={toggleCompleted} />
+          <Checkbox checked={todo.isDone} onChange={toggleCompleted} />
 
           {editText ? (
             <Input value={title} onChange={(e) => setTitle(e.target.value)} />

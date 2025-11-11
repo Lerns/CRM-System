@@ -5,7 +5,6 @@ import type { Filter, Stats } from '../types/todo';
 interface StatusProps {
   loadTodos: (filter: Filter) => Promise<void>;
   status: Stats;
-  filterColor: Filter;
 }
 
 export default function Status({ loadTodos, status }: StatusProps) {
