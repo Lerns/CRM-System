@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo } from 'react';
 
 import { createTodo } from '../API/http';
 import { errorMessage } from '../helpers/errorMessage';
@@ -11,7 +11,7 @@ interface titleTodoProps {
   setError: (message: string) => void;
 }
 
-export default function TitleTodo({ loadTodos, setError }: titleTodoProps) {
+const TitleTodo = memo(({ loadTodos, setError }: titleTodoProps) => {
   const [form] = Form.useForm();
 
   const handleSubmit = async (value: { title: string }) => {
@@ -19,8 +19,8 @@ export default function TitleTodo({ loadTodos, setError }: titleTodoProps) {
     try {
       await createTodo(title);
       form.resetFields();
-      loadTodos();
       setError('');
+      loadTodos();
     } catch (err: unknown) {
       setError(errorMessage(err) || 'Ошибка');
     }
@@ -31,9 +31,11 @@ export default function TitleTodo({ loadTodos, setError }: titleTodoProps) {
       autoComplete="off"
       layout="inline"
       form={form}
+      name="todo"
       onFinish={handleSubmit}
     >
       <Form.Item
+        validateTrigger="onSubmit"
         name="title"
         rules={[
           {
@@ -62,4 +64,6 @@ export default function TitleTodo({ loadTodos, setError }: titleTodoProps) {
       </Form.Item>
     </Form>
   );
-}
+});
+
+export default TitleTodo;

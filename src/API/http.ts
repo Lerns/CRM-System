@@ -6,6 +6,7 @@ import type {
   Filter,
   MetaResponse,
 } from '../types/todo.js';
+
 const API = axios.create({
   baseURL: 'https://easydev.club/api/v1',
 });
