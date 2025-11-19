@@ -1,4 +1,4 @@
-export function validateTodoTitle(value: string) {
+/* export function validateTodoTitle(value: string) {
   if (!value.trim()) {
     return 'Это поле не может быть пустым';
   }
@@ -10,3 +10,5 @@ export function validateTodoTitle(value: string) {
   }
   return '';
 }
+ */
+//можно удалить

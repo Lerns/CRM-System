@@ -3,3 +3,4 @@ export function errorMessage(err: unknown): string {
   if (typeof err === 'string') return err;
   return 'Неизвестная ошибка';
 }
+//стоит переделать средствами antd?

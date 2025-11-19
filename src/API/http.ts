@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { API } from './axios.js';
 import type {
   Todo,
   TodoRequest,
@@ -7,21 +7,19 @@ import type {
   MetaResponse,
 } from '../types/todo.js';
 
-const API = axios.create({
-  baseURL: 'https://easydev.club/api/v1',
-});
-
 export async function fetchTodo(
   filter: Filter = 'all',
 ): Promise<MetaResponse<Todo, Stats>> {
-  const response = await API.get(`/todos?filter=${filter}`);
+  const response = await API.get('/todos', {
+    params: { filter },
+  });
   return response.data;
 }
 
 export async function statsTodo(): Promise<Stats> {
-  const response = await API.get<MetaResponse<Todo, Stats>>(
-    `/todos?filter=all`,
-  );
+  const response = await API.get<MetaResponse<Todo, Stats>>('/todos', {
+    params: { filter: 'all' },
+  });
   if (!response.data.info) {
     throw new Error('Нет данных о статусе');
   }
