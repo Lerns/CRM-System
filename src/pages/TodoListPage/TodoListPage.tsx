@@ -5,7 +5,7 @@ import Status from '../../components/Status';
 import TodoList from '../../components/TodoList';
 import Error from '../../components/Error';
 
-import { fetchTodo } from '../../API/http';
+import { fetchTodo, statsTodo } from '../../API/http';
 import type { Stats, Filter, Todo } from '../../types/todo';
 import { errorMessage } from '../../helpers/errorMessage';
 
@@ -14,13 +14,14 @@ export default function TodoListPage() {
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [filter, setFilter] = useState<Filter>('all');
   const [status, setStatus] = useState<Stats>({
     all: 0,
     completed: 0,
     inWork: 0,
   });
 
-  const loadTodos = useCallback(async (filter: Filter = 'all') => {
+  const loadTodos = useCallback(async () => {
     try {
       setLoading(true);
       const res = await fetchTodo(filter);
@@ -29,18 +30,15 @@ export default function TodoListPage() {
           ? prev
           : res.data;
       });
-      setStatus((prev) => {
-        return JSON.stringify(prev) === JSON.stringify(res.info!)
-          ? prev
-          : res.info!;
-      });
+      const data = await statsTodo();
+      setStatus(data);
       setError('');
     } catch (err: unknown) {
       setError(errorMessage(err));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [filter]);
 
   useEffect(() => {
     loadTodos();
@@ -55,7 +53,7 @@ export default function TodoListPage() {
   return (
     <>
       <TitleTodo loadTodos={loadTodos} setError={setError} />
-      <Status loadTodos={loadTodos} status={status} />
+      <Status filter={filter} setFilter={setFilter} status={status} />
       {error && (
         <Error title="Ошибка" message={error} onClose={() => setError('')} />
       )}

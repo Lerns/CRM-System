@@ -3,16 +3,18 @@ import { Flex, Radio } from 'antd';
 import type { Filter, Stats } from '../types/todo';
 
 interface StatusProps {
-  loadTodos: (filter: Filter) => Promise<void>;
+  filter: Filter;
+  setFilter: (value: Filter) => void;
   status: Stats;
 }
 
-export default function Status({ loadTodos, status }: StatusProps) {
+export default function Status({ filter, setFilter, status }: StatusProps) {
   return (
     <Flex vertical gap="middle">
       <Radio.Group
         name="status"
-        onChange={(e) => loadTodos(e.target.value)}
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
         buttonStyle="solid"
         size="large"
       >
