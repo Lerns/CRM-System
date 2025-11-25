@@ -3,7 +3,7 @@ import React, { useState, memo } from 'react';
 import { putTodo, deleteTodo } from '../API/http';
 import { errorMessage } from '../helpers/errorMessage';
 import type { Todo, Filter } from '../types/todo';
-import { Button, Input, Flex, Card, Checkbox, Typography, Form } from 'antd';
+import { Button, Input, Card, Checkbox, Typography, Form, Flex } from 'antd';
 import {
   EditOutlined,
   DeleteOutlined,
@@ -15,134 +15,119 @@ interface ItemTodoProps {
   todo: Todo;
   loadTodos: (filter?: Filter) => Promise<void>;
   setError: (message: string) => void;
-  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const ItemTodo = memo(
-  ({ todo, loadTodos, setIsEditing, setError }: ItemTodoProps) => {
-    const [editText, setEditText] = useState<boolean>(false);
-    const [form] = Form.useForm();
 
-    const handleSave = async (values: { title: string }) => {
-      const title = values.title.trim();
-      try {
-        await putTodo(todo.id, { title });
-        setIsEditing(false);
-        setEditText(false);
-        await loadTodos();
-        setError('');
-      } catch (err: unknown) {
-        setError(errorMessage(err) || 'Ошибка при обновлении задачи');
-      }
-    };
+const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
+  const [editText, setEditText] = useState<boolean>(false);
+  const [form] = Form.useForm();
 
-    const toggleCompleted = async () => {
-      try {
-        await putTodo(todo.id, { isDone: !todo.isDone });
-        await loadTodos();
-        setError('');
-      } catch (err) {
-        setError(errorMessage(err) || 'Ошибка при изменении статуса');
-      }
-    };
+  const handleSave = async (values: { title: string }) => {
+    const title = values.title.trim();
 
-    const handleEdit = () => {
-      setIsEditing(true);
-      setEditText(true);
-      form.setFieldsValue({ title: todo.title });
-    };
-
-    const handleCancel = () => {
-      setIsEditing(false);
+    try {
+      await putTodo(todo.id, { title });
       setEditText(false);
-      form.resetFields();
-    };
+      await loadTodos();
+      setError('');
+    } catch (err: unknown) {
+      setError(errorMessage(err) || 'Ошибка при обновлении задачи');
+    }
+  };
 
-    const removeTodo = async (id: number) => {
-      try {
-        await deleteTodo(id);
-        await loadTodos();
-      } catch (err) {
-        setError(errorMessage(err) || 'Ошибка при удалении задачи');
-      }
-    };
+  const toggleCompleted = async () => {
+    try {
+      await putTodo(todo.id, { isDone: !todo.isDone });
+      await loadTodos();
+      setError('');
+    } catch (err) {
+      setError(errorMessage(err) || 'Ошибка при изменении статуса');
+    }
+  };
 
-    return (
-      <Card>
-        <Flex align="center" justify="space-between" gap="small">
-          <Flex align="center" gap="small" flex={1}>
-            <Checkbox checked={todo.isDone} onChange={toggleCompleted} />
+  const handleEdit = () => {
+    setEditText(true);
+    form.setFieldsValue({ title: todo.title });
+  };
 
-            {editText ? (
-              <Form form={form} onFinish={handleSave}>
-                <Form.Item
-                  name="title"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Это поле не может быть пустым ',
-                      transform: (value: string) => value.trim(),
-                    },
-                    {
-                      min: 2,
-                      message: 'Минимальная длина текста 2 символа',
-                      transform: (value: string) => value.trim(),
-                    },
-                    {
-                      max: 64,
-                      message: 'Максимальная длина текста 64 символа',
-                      transform: (value: string) => value.trim(),
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
+  const handleCancel = () => {
+    setEditText(false);
+    form.resetFields();
+  };
 
-                <Button
-                  type="primary"
-                  size="small"
-                  htmlType="submit"
-                  icon={<SaveOutlined />}
-                >
-                  Сохранить
-                </Button>
+  const removeTodo = async (id: number) => {
+    try {
+      await deleteTodo(id);
+      await loadTodos();
+    } catch (err) {
+      setError(errorMessage(err) || 'Ошибка при удалении задачи');
+    }
+  };
 
-                <Button
-                  type="primary"
-                  danger
-                  icon={<CloseOutlined />}
-                  size="small"
-                  onClick={handleCancel}
-                >
-                  Отмена
-                </Button>
-              </Form>
-            ) : (
+  return (
+    <Card>
+      <Flex align="center" justify="space-between">
+        <Flex align="center" gap="small" flex={1}>
+          <Checkbox checked={todo.isDone} onChange={toggleCompleted} />
+
+          {!editText ? (
+            <>
               <Typography.Text>{todo.title}</Typography.Text>
-            )}
-          </Flex>
-          <Flex align="center" gap="small">
-            {!editText && (
-              <>
-                <Button
-                  type="primary"
-                  icon={<EditOutlined />}
-                  size="small"
-                  onClick={handleEdit}
-                ></Button>
 
-                <Button
-                  type="primary"
-                  danger
-                  icon={<DeleteOutlined />}
-                  size="small"
-                  onClick={() => removeTodo(todo.id)}
-                ></Button>
-              </>
-            )}
-          </Flex>
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                size="small"
+                htmlType="button"
+                onClick={handleEdit}
+              />
+
+              <Button
+                type="primary"
+                danger
+                icon={<DeleteOutlined />}
+                size="small"
+                onClick={() => removeTodo(todo.id)}
+              />
+            </>
+          ) : (
+            <Form form={form} onFinish={handleSave} layout="inline">
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: 'Это поле не может быть пустым',
+                  },
+                  { min: 2, message: 'Минимум 2 символа' },
+                  { max: 64, message: 'Максимум 64 символа' },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Button
+                type="primary"
+                size="small"
+                htmlType="submit"
+                icon={<SaveOutlined />}
+              >
+                Сохранить
+              </Button>
+
+              <Button
+                type="primary"
+                danger
+                size="small"
+                icon={<CloseOutlined />}
+                onClick={handleCancel}
+              >
+                Отмена
+              </Button>
+            </Form>
+          )}
         </Flex>
-      </Card>
-    );
-  },
-);
+      </Flex>
+    </Card>
+  );
+});
+
 export default ItemTodo;

@@ -13,7 +13,6 @@ export default function TodoListPage() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [filter, setFilter] = useState<Filter>('all');
   const [status, setStatus] = useState<Stats>({
     all: 0,
@@ -25,11 +24,7 @@ export default function TodoListPage() {
     try {
       setLoading(true);
       const res = await fetchTodo(filter);
-      setTodos((prev) => {
-        return JSON.stringify(prev) === JSON.stringify(res.data)
-          ? prev
-          : res.data;
-      });
+      setTodos(res.data);
       const data = await statsTodo();
       setStatus(data);
       setError('');
@@ -42,13 +37,15 @@ export default function TodoListPage() {
 
   useEffect(() => {
     loadTodos();
+  }, [filter, loadTodos]);
+
+  useEffect(() => {
+    loadTodos();
     const interval = setInterval(() => {
-      if (!isEditing) {
-        loadTodos();
-      }
+      loadTodos();
     }, 5000);
     return () => clearInterval(interval);
-  }, [loadTodos, isEditing]);
+  }, [loadTodos]);
 
   return (
     <>
@@ -58,7 +55,6 @@ export default function TodoListPage() {
         <Error title="Ошибка" message={error} onClose={() => setError('')} />
       )}
       <TodoList
-        setIsEditing={setIsEditing}
         todos={todos}
         loading={loading}
         loadTodos={loadTodos}
