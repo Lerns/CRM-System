@@ -12,7 +12,6 @@ import { errorMessage } from '../../helpers/errorMessage';
 export default function TodoListPage() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
   const [filter, setFilter] = useState<Filter>('all');
   const [status, setStatus] = useState<Stats>({
     all: 0,
@@ -22,7 +21,6 @@ export default function TodoListPage() {
 
   const loadTodos = useCallback(async () => {
     try {
-      setLoading(true);
       const res = await fetchTodo(filter);
       setTodos(res.data);
       const data = await statsTodo();
@@ -30,14 +28,8 @@ export default function TodoListPage() {
       setError('');
     } catch (err: unknown) {
       setError(errorMessage(err));
-    } finally {
-      setLoading(false);
     }
   }, [filter]);
-
-  useEffect(() => {
-    loadTodos();
-  }, [filter, loadTodos]);
 
   useEffect(() => {
     loadTodos();
@@ -54,12 +46,7 @@ export default function TodoListPage() {
       {error && (
         <Error title="Ошибка" message={error} onClose={() => setError('')} />
       )}
-      <TodoList
-        todos={todos}
-        loading={loading}
-        loadTodos={loadTodos}
-        setError={setError}
-      />
+      <TodoList todos={todos} loadTodos={loadTodos} setError={setError} />
     </>
   );
 }

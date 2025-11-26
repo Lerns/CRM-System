@@ -19,11 +19,11 @@ interface ItemTodoProps {
 
 const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
   const [editText, setEditText] = useState<boolean>(false);
+
   const [form] = Form.useForm();
 
   const handleSave = async (values: { title: string }) => {
     const title = values.title.trim();
-
     try {
       await putTodo(todo.id, { title });
       setEditText(false);
@@ -34,19 +34,9 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
     }
   };
 
-  const toggleCompleted = async () => {
-    try {
-      await putTodo(todo.id, { isDone: !todo.isDone });
-      await loadTodos();
-      setError('');
-    } catch (err) {
-      setError(errorMessage(err) || 'Ошибка при изменении статуса');
-    }
-  };
-
   const handleEdit = () => {
-    setEditText(true);
     form.setFieldsValue({ title: todo.title });
+    setEditText(true);
   };
 
   const handleCancel = () => {
@@ -62,6 +52,15 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
       setError(errorMessage(err) || 'Ошибка при удалении задачи');
     }
   };
+  const toggleCompleted = async () => {
+    try {
+      await putTodo(todo.id, { isDone: !todo.isDone });
+      await loadTodos();
+      setError('');
+    } catch (err) {
+      setError(errorMessage(err) || 'Ошибка при изменении статуса');
+    }
+  };
 
   return (
     <Card>
@@ -69,7 +68,44 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
         <Flex align="center" gap="small" flex={1}>
           <Checkbox checked={todo.isDone} onChange={toggleCompleted} />
 
-          {!editText ? (
+          {editText ? (
+            <>
+              <Form form={form} onFinish={handleSave} layout="inline">
+                <Form.Item
+                  name="title"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Это поле не может быть пустым',
+                    },
+                    { min: 2, message: 'Минимум 2 символа' },
+                    { max: 64, message: 'Максимум 64 символа' },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+
+                <Button
+                  type="primary"
+                  size="small"
+                  htmlType="submit"
+                  icon={<SaveOutlined />}
+                >
+                  Сохранить
+                </Button>
+
+                <Button
+                  type="primary"
+                  danger
+                  size="small"
+                  icon={<CloseOutlined />}
+                  onClick={handleCancel}
+                >
+                  Отмена
+                </Button>
+              </Form>
+            </>
+          ) : (
             <>
               <Typography.Text>{todo.title}</Typography.Text>
 
@@ -89,40 +125,6 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
                 onClick={() => removeTodo(todo.id)}
               />
             </>
-          ) : (
-            <Form form={form} onFinish={handleSave} layout="inline">
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
-                    message: 'Это поле не может быть пустым',
-                  },
-                  { min: 2, message: 'Минимум 2 символа' },
-                  { max: 64, message: 'Максимум 64 символа' },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Button
-                type="primary"
-                size="small"
-                htmlType="submit"
-                icon={<SaveOutlined />}
-              >
-                Сохранить
-              </Button>
-
-              <Button
-                type="primary"
-                danger
-                size="small"
-                icon={<CloseOutlined />}
-                onClick={handleCancel}
-              >
-                Отмена
-              </Button>
-            </Form>
           )}
         </Flex>
       </Flex>

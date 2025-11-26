@@ -1,34 +1,25 @@
 import ItemTodo from './ItemTodo';
-import { List, Typography } from 'antd';
+import { List } from 'antd';
 import type { Todo, Filter } from '../types/todo';
 import { memo } from 'react';
 
 interface TodoListProps {
   todos: Todo[];
-  loading: boolean;
   loadTodos: (filter?: Filter) => Promise<void>;
   setError: (message: string) => void;
 }
-const TodoList = memo(
-  ({ todos = [], loading, loadTodos, setError }: TodoListProps) => {
-    if (loading)
-      return <Typography.Text>Идет загрузка, ожидайте</Typography.Text>;
-    if (todos.length === 0)
-      return <Typography.Text>Нет задач для отображения</Typography.Text>;
-
-    return (
-      <List>
-        {todos.map((todo) => (
-          <ItemTodo
-            key={todo.id}
-            todo={todo}
-            loadTodos={loadTodos}
-            setError={setError}
-          />
-        ))}
-      </List>
-    );
-  },
-);
-
+const TodoList = memo(({ todos = [], loadTodos, setError }: TodoListProps) => {
+  return (
+    <List>
+      {todos.map((todo) => (
+        <ItemTodo
+          key={todo.id}
+          todo={todo}
+          loadTodos={loadTodos}
+          setError={setError}
+        />
+      ))}{' '}
+    </List>
+  );
+});
 export default TodoList;
