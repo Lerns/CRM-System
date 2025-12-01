@@ -5,9 +5,10 @@ import Status from '../../components/Status';
 import TodoList from '../../components/TodoList';
 import Error from '../../components/Error';
 
-import { fetchTodo, statsTodo } from '../../API/http';
-import type { Stats, Filter, Todo } from '../../types/todo';
+import { fetchTodo } from '../../API/http';
+import type { Stats, Filter, Todo } from '../../helpers/types';
 import { errorMessage } from '../../helpers/errorMessage';
+import { AUTO_REFRESH_DELAY } from '../../helpers/constants';
 
 export default function TodoListPage() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -23,7 +24,7 @@ export default function TodoListPage() {
     try {
       const res = await fetchTodo(filter);
       setTodos(res.data);
-      const data = await statsTodo();
+      const data = res.info ?? { all: 0, completed: 0, inWork: 0 };
       setStatus(data);
       setError('');
     } catch (err: unknown) {
@@ -35,7 +36,7 @@ export default function TodoListPage() {
     loadTodos();
     const interval = setInterval(() => {
       loadTodos();
-    }, 5000);
+    }, AUTO_REFRESH_DELAY);
     return () => clearInterval(interval);
   }, [loadTodos]);
 

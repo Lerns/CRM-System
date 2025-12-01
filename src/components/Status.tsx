@@ -1,6 +1,8 @@
-import { Flex, Radio } from 'antd';
+import { memo } from 'react';
 
-import type { Filter, Stats } from '../types/todo';
+import type { Filter, Stats } from '../helpers/types';
+
+import { Flex, Radio, RadioChangeEvent } from 'antd';
 
 interface StatusProps {
   filter: Filter;
@@ -8,13 +10,17 @@ interface StatusProps {
   status: Stats;
 }
 
-export default function Status({ filter, setFilter, status }: StatusProps) {
+const Status = memo(({ filter, setFilter, status }: StatusProps) => {
+  const handleFilterChange = (e: RadioChangeEvent) => {
+    setFilter(e.target.value);
+  };
+
   return (
     <Flex vertical gap="middle">
       <Radio.Group
         name="status"
         value={filter}
-        onChange={(e) => setFilter(e.target.value)}
+        onChange={handleFilterChange}
         buttonStyle="solid"
         size="large"
       >
@@ -28,4 +34,5 @@ export default function Status({ filter, setFilter, status }: StatusProps) {
       </Radio.Group>
     </Flex>
   );
-}
+});
+export default Status;

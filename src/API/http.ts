@@ -5,7 +5,7 @@ import type {
   Stats,
   Filter,
   MetaResponse,
-} from '../types/todo.js';
+} from '../helpers/types.js';
 
 export async function fetchTodo(
   filter: Filter = 'all',
@@ -14,16 +14,6 @@ export async function fetchTodo(
     params: { filter },
   });
   return response.data;
-}
-
-export async function statsTodo(): Promise<Stats> {
-  const response = await API.get<MetaResponse<Todo, Stats>>('/todos', {
-    params: { filter: 'all' },
-  });
-  if (!response.data.info) {
-    throw new Error('Нет данных о статусе');
-  }
-  return response.data.info;
 }
 
 export async function createTodo(title: string): Promise<Todo> {

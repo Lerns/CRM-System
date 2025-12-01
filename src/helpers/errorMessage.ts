@@ -1,6 +1,6 @@
 export function errorMessage(err: unknown): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
+
   return 'Неизвестная ошибка';
 }
-//стоит переделать средствами antd?

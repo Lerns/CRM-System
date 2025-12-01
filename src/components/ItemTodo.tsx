@@ -1,9 +1,13 @@
-import React, { useState, memo } from 'react';
+import { useState, memo } from 'react';
 
 import { putTodo, deleteTodo } from '../API/http';
 import { errorMessage } from '../helpers/errorMessage';
-import type { Todo, Filter } from '../types/todo';
+import { titleRules } from '../helpers/validation';
+
+import type { Todo, Filter } from '../helpers/types';
+
 import { Button, Input, Card, Checkbox, Typography, Form, Flex } from 'antd';
+
 import {
   EditOutlined,
   DeleteOutlined,
@@ -19,10 +23,9 @@ interface ItemTodoProps {
 
 const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
   const [editText, setEditText] = useState<boolean>(false);
-
   const [form] = Form.useForm();
 
-  const handleSave = async (values: { title: string }) => {
+  const handleTodoSave = async (values: { title: string }) => {
     const title = values.title.trim();
     try {
       await putTodo(todo.id, { title });
@@ -34,17 +37,17 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
     }
   };
 
-  const handleEdit = () => {
+  const handleTodoEditStart = () => {
     form.setFieldsValue({ title: todo.title });
     setEditText(true);
   };
 
-  const handleCancel = () => {
+  const handleTodoEditCancel = () => {
     setEditText(false);
     form.resetFields();
   };
 
-  const removeTodo = async (id: number) => {
+  const handleTodoDelete = async (id: number) => {
     try {
       await deleteTodo(id);
       await loadTodos();
@@ -52,7 +55,8 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
       setError(errorMessage(err) || 'Ошибка при удалении задачи');
     }
   };
-  const toggleCompleted = async () => {
+
+  const handleTodoToggle = async () => {
     try {
       await putTodo(todo.id, { isDone: !todo.isDone });
       await loadTodos();
@@ -66,22 +70,12 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
     <Card>
       <Flex align="center" justify="space-between">
         <Flex align="center" gap="small" flex={1}>
-          <Checkbox checked={todo.isDone} onChange={toggleCompleted} />
+          <Checkbox checked={todo.isDone} onChange={handleTodoToggle} />
 
           {editText ? (
             <>
-              <Form form={form} onFinish={handleSave} layout="inline">
-                <Form.Item
-                  name="title"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Это поле не может быть пустым',
-                    },
-                    { min: 2, message: 'Минимум 2 символа' },
-                    { max: 64, message: 'Максимум 64 символа' },
-                  ]}
-                >
+              <Form form={form} onFinish={handleTodoSave} layout="inline">
+                <Form.Item name="title" rules={titleRules}>
                   <Input />
                 </Form.Item>
 
@@ -99,7 +93,7 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
                   danger
                   size="small"
                   icon={<CloseOutlined />}
-                  onClick={handleCancel}
+                  onClick={handleTodoEditCancel}
                 >
                   Отмена
                 </Button>
@@ -114,7 +108,7 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
                 icon={<EditOutlined />}
                 size="small"
                 htmlType="button"
-                onClick={handleEdit}
+                onClick={handleTodoEditStart}
               />
 
               <Button
@@ -122,7 +116,7 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
                 danger
                 icon={<DeleteOutlined />}
                 size="small"
-                onClick={() => removeTodo(todo.id)}
+                onClick={() => handleTodoDelete(todo.id)}
               />
             </>
           )}

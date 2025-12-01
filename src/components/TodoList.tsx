@@ -1,14 +1,20 @@
 import ItemTodo from './ItemTodo';
+
 import { List } from 'antd';
-import type { Todo, Filter } from '../types/todo';
-import { memo } from 'react';
+
+import type { Todo, Filter } from '../helpers/types';
 
 interface TodoListProps {
   todos: Todo[];
   loadTodos: (filter?: Filter) => Promise<void>;
   setError: (message: string) => void;
 }
-const TodoList = memo(({ todos = [], loadTodos, setError }: TodoListProps) => {
+
+export default function TodoList({
+  todos = [],
+  loadTodos,
+  setError,
+}: TodoListProps) {
   return (
     <List>
       {todos.map((todo) => (
@@ -18,8 +24,7 @@ const TodoList = memo(({ todos = [], loadTodos, setError }: TodoListProps) => {
           loadTodos={loadTodos}
           setError={setError}
         />
-      ))}{' '}
+      ))}
     </List>
   );
-});
-export default TodoList;
+}

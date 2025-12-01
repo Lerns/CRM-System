@@ -2,19 +2,21 @@ import { memo } from 'react';
 
 import { createTodo } from '../API/http';
 import { errorMessage } from '../helpers/errorMessage';
-import type { Filter } from '../types/todo';
+import { titleRules } from '../helpers/validation';
 
 import { Form, Input, Button } from 'antd';
 
-interface titleTodoProps {
+import type { Filter } from '../helpers/types';
+
+interface TitleTodoProps {
   loadTodos: (filter?: Filter) => Promise<void>;
   setError: (message: string) => void;
 }
 
-const TitleTodo = memo(({ loadTodos, setError }: titleTodoProps) => {
+const TitleTodo = memo(({ loadTodos, setError }: TitleTodoProps) => {
   const [form] = Form.useForm();
 
-  const handleSubmit = async (value: { title: string }) => {
+  const handleTodoCreate = async (value: { title: string }) => {
     const title = value.title.trim();
     try {
       await createTodo(title);
@@ -32,34 +34,14 @@ const TitleTodo = memo(({ loadTodos, setError }: titleTodoProps) => {
       layout="inline"
       form={form}
       name="todo"
-      onFinish={handleSubmit}
+      onFinish={handleTodoCreate}
     >
-      <Form.Item
-        validateTrigger="onSubmit"
-        name="title"
-        rules={[
-          {
-            required: true,
-            message: 'Это поле не может быть пустым ',
-            transform: (value: string) => value.trim(),
-          },
-          {
-            min: 2,
-            message: 'Минимальная длина текста 2 символа',
-            transform: (value: string) => value.trim(),
-          },
-          {
-            max: 64,
-            message: 'Максимальная длина текста 64 символа',
-            transform: (value: string) => value.trim(),
-          },
-        ]}
-      >
-        <Input autoComplete="off" placeholder="Task To Be Done..." />
+      <Form.Item validateTrigger="onSubmit" name="title" rules={titleRules}>
+        <Input autoComplete="off" placeholder="Введите текст..." />
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit">
-          Add
+          Добавить
         </Button>
       </Form.Item>
     </Form>
