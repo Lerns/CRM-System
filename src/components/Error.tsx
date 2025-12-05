@@ -1,4 +1,4 @@
-interface ErrorPrors {
+interface ErrorProps {
   title: string;
   message: string;
   onClose: () => void;
@@ -6,7 +6,7 @@ interface ErrorPrors {
 
 import { Alert } from 'antd';
 
-export default function Error({ title, message, onClose }: ErrorPrors) {
+export default function Error({ title, message, onClose }: ErrorProps) {
   return (
     <Alert
       type="error"

@@ -8,12 +8,12 @@ export const titleRules = [
   },
   {
     min: MIN_TITLE_LENGTH,
-    message: `Минимум ${MIN_TITLE_LENGTH} символа`,
+    message: `Минимальная длина: ${MIN_TITLE_LENGTH}`,
     transform: (value: string) => value.trim(),
   },
   {
     max: MAX_TITLE_LENGTH,
-    message: `Максимум ${MAX_TITLE_LENGTH} символа`,
+    message: `Максимальная длина: ${MAX_TITLE_LENGTH}`,
     transform: (value: string) => value.trim(),
   },
 ];

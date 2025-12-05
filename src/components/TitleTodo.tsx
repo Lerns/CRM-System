@@ -10,21 +10,21 @@ import type { Filter } from '../helpers/types';
 
 interface TitleTodoProps {
   loadTodos: (filter?: Filter) => Promise<void>;
-  setError: (message: string) => void;
+  onError: (message: string) => void;
 }
 
-const TitleTodo = memo(({ loadTodos, setError }: TitleTodoProps) => {
+const TitleTodo = memo(({ loadTodos, onError }: TitleTodoProps) => {
   const [form] = Form.useForm();
 
   const handleTodoCreate = async (value: { title: string }) => {
     const title = value.title.trim();
     try {
-      await createTodo(title);
       form.resetFields();
-      setError('');
-      loadTodos();
+      await createTodo(title);
+      onError('');
+      await loadTodos();
     } catch (err: unknown) {
-      setError(errorMessage(err) || 'Ошибка');
+      onError(errorMessage(err) || 'Ошибка');
     }
   };
 

@@ -42,12 +42,12 @@ export default function TodoListPage() {
 
   return (
     <>
-      <TitleTodo loadTodos={loadTodos} setError={setError} />
+      <TitleTodo loadTodos={loadTodos} onError={setError} />
       <Status filter={filter} setFilter={setFilter} status={status} />
       {error && (
         <Error title="Ошибка" message={error} onClose={() => setError('')} />
       )}
-      <TodoList todos={todos} loadTodos={loadTodos} setError={setError} />
+      <TodoList todos={todos} loadTodos={loadTodos} onError={setError} />
     </>
   );
 }

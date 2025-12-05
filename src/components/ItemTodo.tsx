@@ -18,10 +18,10 @@ import {
 interface ItemTodoProps {
   todo: Todo;
   loadTodos: (filter?: Filter) => Promise<void>;
-  setError: (message: string) => void;
+  onError: (message: string) => void;
 }
 
-const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
+const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
   const [editText, setEditText] = useState<boolean>(false);
   const [form] = Form.useForm();
 
@@ -31,9 +31,9 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
       await putTodo(todo.id, { title });
       setEditText(false);
       await loadTodos();
-      setError('');
+      onError('');
     } catch (err: unknown) {
-      setError(errorMessage(err) || 'Ошибка при обновлении задачи');
+      onError(errorMessage(err) || 'Ошибка при обновлении задачи');
     }
   };
 
@@ -51,8 +51,8 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
     try {
       await deleteTodo(id);
       await loadTodos();
-    } catch (err) {
-      setError(errorMessage(err) || 'Ошибка при удалении задачи');
+    } catch (err: unknown) {
+      onError(errorMessage(err) || 'Ошибка при удалении задачи');
     }
   };
 
@@ -60,9 +60,9 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
     try {
       await putTodo(todo.id, { isDone: !todo.isDone });
       await loadTodos();
-      setError('');
-    } catch (err) {
-      setError(errorMessage(err) || 'Ошибка при изменении статуса');
+      onError('');
+    } catch (err: unknown) {
+      onError(errorMessage(err) || 'Ошибка при изменении статуса');
     }
   };
 
@@ -107,7 +107,6 @@ const ItemTodo = memo(({ todo, loadTodos, setError }: ItemTodoProps) => {
                 type="primary"
                 icon={<EditOutlined />}
                 size="small"
-                htmlType="button"
                 onClick={handleTodoEditStart}
               />
 

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { useState } from 'react';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 
@@ -28,14 +28,15 @@ const items: MenuItem[] = [
 
 export const RootLayout = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const location = useLocation();
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
         <Menu
           theme="dark"
-          defaultSelectedKeys={['1']}
           mode="inline"
+          selectedKeys={[location.pathname]}
           items={items}
         />
       </Sider>

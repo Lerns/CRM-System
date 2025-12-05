@@ -7,24 +7,21 @@ import type { Todo, Filter } from '../helpers/types';
 interface TodoListProps {
   todos: Todo[];
   loadTodos: (filter?: Filter) => Promise<void>;
-  setError: (message: string) => void;
+  onError: (message: string) => void;
 }
 
-export default function TodoList({
-  todos = [],
-  loadTodos,
-  setError,
-}: TodoListProps) {
+export default function TodoList({ todos, loadTodos, onError }: TodoListProps) {
   return (
-    <List>
-      {todos.map((todo) => (
+    <List
+      dataSource={todos}
+      renderItem={(todo) => (
         <ItemTodo
           key={todo.id}
           todo={todo}
           loadTodos={loadTodos}
-          setError={setError}
+          onError={onError}
         />
-      ))}
-    </List>
+      )}
+    />
   );
 }
