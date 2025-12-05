@@ -16,6 +16,10 @@ export const router = createBrowserRouter([
         path: '/profile',
         element: <ProfilePage />,
       },
+      {
+        path: '*',
+        element: <div>404 Not Found</div>,
+      },
     ],
   },
 ]);
