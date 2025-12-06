@@ -22,11 +22,11 @@ export async function createTodo(title: string): Promise<Todo> {
 }
 
 export async function putTodo(id: number, data: TodoRequest): Promise<Todo> {
-  const response = await API.put('/todos/${id}', data);
+  const response = await API.put(`/todos/${id}`, data);
   return response.data;
 }
 
 export async function deleteTodo(id: number): Promise<boolean> {
-  await API.delete('/todos/${id}');
+  await API.delete(`/todos/${id}`);
   return true;
 }
