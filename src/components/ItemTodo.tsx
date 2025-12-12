@@ -1,6 +1,6 @@
 import { useState, memo } from 'react';
 
-import { putTodo, deleteTodo } from '../API/http';
+import { putTodo, deleteTodo } from '../api/http';
 import { errorMessage } from '../helpers/errorMessage';
 import { titleRules } from '../helpers/validation';
 
@@ -38,7 +38,6 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
   };
 
   const handleTodoEditStart = () => {
-    form.setFieldsValue({ title: todo.title });
     setEditText(true);
   };
 
@@ -74,7 +73,12 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
 
           {editText ? (
             <>
-              <Form form={form} onFinish={handleTodoSave} layout="inline">
+              <Form
+                initialValues={{ title: todo.title }}
+                form={form}
+                onFinish={handleTodoSave}
+                layout="inline"
+              >
                 <Form.Item name="title" rules={titleRules}>
                   <Input />
                 </Form.Item>
@@ -84,19 +88,16 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
                   size="small"
                   htmlType="submit"
                   icon={<SaveOutlined />}
-                >
-                  Сохранить
-                </Button>
+                />
 
                 <Button
                   type="primary"
-                  danger
+                  color="danger"
+                  variant="solid"
                   size="small"
                   icon={<CloseOutlined />}
                   onClick={handleTodoEditCancel}
-                >
-                  Отмена
-                </Button>
+                />
               </Form>
             </>
           ) : (
@@ -112,7 +113,8 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
 
               <Button
                 type="primary"
-                danger
+                color="danger"
+                variant="solid"
                 icon={<DeleteOutlined />}
                 size="small"
                 onClick={() => handleTodoDelete(todo.id)}

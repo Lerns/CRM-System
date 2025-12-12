@@ -5,7 +5,7 @@ import Status from '../../components/Status';
 import TodoList from '../../components/TodoList';
 import Error from '../../components/Error';
 
-import { fetchTodo } from '../../API/http';
+import { fetchTodo } from '../../api/http';
 import type { Stats, Filter, Todo } from '../../helpers/types';
 import { errorMessage } from '../../helpers/errorMessage';
 import { AUTO_REFRESH_DELAY } from '../../helpers/constants';

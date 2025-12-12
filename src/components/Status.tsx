@@ -2,7 +2,8 @@ import { memo } from 'react';
 
 import type { Filter, Stats } from '../helpers/types';
 
-import { Flex, Radio, RadioChangeEvent } from 'antd';
+import { Flex, Tabs } from 'antd';
+import type { TabsProps } from 'antd';
 
 interface StatusProps {
   filter: Filter;
@@ -11,27 +12,19 @@ interface StatusProps {
 }
 
 const Status = memo(({ filter, setFilter, status }: StatusProps) => {
-  const handleFilterChange = (e: RadioChangeEvent) => {
-    setFilter(e.target.value);
-  };
+  const items: TabsProps['items'] = [
+    { key: 'all', label: `Все(${status.all} )` },
+    { key: 'inWork', label: `В работе (${status.inWork} )` },
+    { key: 'completed', label: `Сделано(${status.completed})` },
+  ];
 
   return (
     <Flex vertical gap="middle">
-      <Radio.Group
-        name="status"
-        value={filter}
-        onChange={handleFilterChange}
-        buttonStyle="solid"
-        size="large"
-      >
-        <Radio.Button value="all">Все({status.all})</Radio.Button>
-
-        <Radio.Button value="inWork">В работе({status.inWork})</Radio.Button>
-
-        <Radio.Button value="completed">
-          Сделано({status.completed})
-        </Radio.Button>
-      </Radio.Group>
+      <Tabs
+        activeKey={filter}
+        items={items}
+        onChange={(key) => setFilter(key as Filter)}
+      />
     </Flex>
   );
 });

@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { createTodo } from '../API/http';
+import { createTodo } from '../api/http';
 import { errorMessage } from '../helpers/errorMessage';
 import { titleRules } from '../helpers/validation';
 
@@ -19,8 +19,8 @@ const TitleTodo = memo(({ loadTodos, onError }: TitleTodoProps) => {
   const handleTodoCreate = async (value: { title: string }) => {
     const title = value.title.trim();
     try {
-      form.resetFields();
       await createTodo(title);
+      form.resetFields();
       onError('');
       await loadTodos();
     } catch (err: unknown) {
