@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
 import TitleTodo from '../../components/TitleTodo';
-import Status from '../../components/Status';
+import TodoFilter from '../../components/TodoFilter';
 import TodoList from '../../components/TodoList';
 import Error from '../../components/Error';
 
@@ -43,7 +43,7 @@ export default function TodoListPage() {
   return (
     <>
       <TitleTodo loadTodos={loadTodos} onError={setError} />
-      <Status filter={filter} setFilter={setFilter} status={status} />
+      <TodoFilter filter={filter} setFilter={setFilter} status={status} />
       {error && (
         <Error title="Ошибка" message={error} onClose={() => setError('')} />
       )}

@@ -46,9 +46,9 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
     form.resetFields();
   };
 
-  const handleTodoDelete = async (id: number) => {
+  const handleTodoDelete = async () => {
     try {
-      await deleteTodo(id);
+      await deleteTodo(todo.id);
       await loadTodos();
     } catch (err: unknown) {
       onError(errorMessage(err) || 'Ошибка при удалении задачи');
@@ -117,7 +117,7 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
                 variant="solid"
                 icon={<DeleteOutlined />}
                 size="small"
-                onClick={() => handleTodoDelete(todo.id)}
+                onClick={handleTodoDelete}
               />
             </>
           )}
