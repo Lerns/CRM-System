@@ -1,63 +1,53 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import TitleTodo from '../../components/TitleTodo';
-import Status from '../../components/Status';
+import TodoFilter from '../../components/TodoFilter';
 import TodoList from '../../components/TodoList';
 import Error from '../../components/Error';
 
-import { fetchTodo, statsTodo } from '../../API/http';
-import type { Stats, Filter, Todo } from '../../types/todo';
+import { fetchTodo } from '../../api/http';
+import type { Stats, Filter, Todo } from '../../helpers/types';
 import { errorMessage } from '../../helpers/errorMessage';
-import './TodoListPage.scss';
+import { AUTO_REFRESH_DELAY } from '../../helpers/constants';
 
 export default function TodoListPage() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [filter, setFilter] = useState<Filter>('all');
   const [status, setStatus] = useState<Stats>({
     all: 0,
     completed: 0,
     inWork: 0,
   });
-  const filterRef = useRef<Filter>('all');
 
-  const loadTodos = async (filter: Filter = filterRef.current) => {
+  const loadTodos = useCallback(async () => {
     try {
-      setLoading(true);
       const res = await fetchTodo(filter);
       setTodos(res.data);
-      filterRef.current = filter;
-      const data = await statsTodo();
+      const data = res.info ?? { all: 0, completed: 0, inWork: 0 };
       setStatus(data);
       setError('');
     } catch (err: unknown) {
       setError(errorMessage(err));
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [filter]);
 
   useEffect(() => {
     loadTodos();
-  }, []);
+    const interval = setInterval(() => {
+      loadTodos();
+    }, AUTO_REFRESH_DELAY);
+    return () => clearInterval(interval);
+  }, [loadTodos]);
 
   return (
     <>
-      <TitleTodo loadTodos={loadTodos} setError={setError} />
-      <Status
-        loadTodos={loadTodos}
-        status={status}
-        filterColor={filterRef.current}
-      />
+      <TitleTodo loadTodos={loadTodos} onError={setError} />
+      <TodoFilter filter={filter} setFilter={setFilter} status={status} />
       {error && (
         <Error title="Ошибка" message={error} onClose={() => setError('')} />
       )}
-      <TodoList
-        todos={todos}
-        loading={loading}
-        loadTodos={loadTodos}
-        setError={setError}
-      />
+      <TodoList todos={todos} loadTodos={loadTodos} onError={setError} />
     </>
   );
 }

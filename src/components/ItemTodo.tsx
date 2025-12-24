@@ -1,122 +1,130 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 
-import { putTodo, deleteTodo } from '../API/http';
-import { validateTodoTitle } from '../helpers/validation';
+import { putTodo, deleteTodo } from '../api/http';
 import { errorMessage } from '../helpers/errorMessage';
-import type { Todo, Filter } from '../types/todo';
+import { titleRules } from '../helpers/validation';
 
-import './ItemTodo.scss';
+import type { Todo, Filter } from '../helpers/types';
 
-import iconEdit from '../assets/editing.png';
-import inconDel from '../assets/trash.png';
+import { Button, Input, Card, Checkbox, Typography, Form, Flex } from 'antd';
+
+import {
+  EditOutlined,
+  DeleteOutlined,
+  SaveOutlined,
+  CloseOutlined,
+} from '@ant-design/icons';
 
 interface ItemTodoProps {
   todo: Todo;
   loadTodos: (filter?: Filter) => Promise<void>;
-  setError: (message: string) => void;
+  onError: (message: string) => void;
 }
-export default function ItemTodo({ todo, loadTodos, setError }: ItemTodoProps) {
-  const [editText, setEditText] = useState<string>('');
-  const [editState, setEditState] = useState<boolean>(false);
 
-  const handleSave = async () => {
-    const validationError = validateTodoTitle(editText);
-    if (validationError) {
-      return setError(validationError);
-    }
+const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
+  const [editText, setEditText] = useState<boolean>(false);
+  const [form] = Form.useForm();
+
+  const handleTodoSave = async (values: { title: string }) => {
+    const title = values.title.trim();
     try {
-      await putTodo(todo.id, { title: editText });
-      setEditState(false);
-      setEditText('');
-      loadTodos();
+      await putTodo(todo.id, { title });
+      setEditText(false);
+      await loadTodos();
+      onError('');
     } catch (err: unknown) {
-      setError(errorMessage(err) || 'Ошибка при обновлении задачи');
+      onError(errorMessage(err) || 'Ошибка при обновлении задачи');
     }
   };
 
-  const toggleCompleted = async () => {
+  const handleTodoEditStart = () => {
+    setEditText(true);
+  };
+
+  const handleTodoEditCancel = () => {
+    setEditText(false);
+    form.resetFields();
+  };
+
+  const handleTodoDelete = async () => {
+    try {
+      await deleteTodo(todo.id);
+      await loadTodos();
+    } catch (err: unknown) {
+      onError(errorMessage(err) || 'Ошибка при удалении задачи');
+    }
+  };
+
+  const handleTodoToggle = async () => {
     try {
       await putTodo(todo.id, { isDone: !todo.isDone });
       await loadTodos();
-    } catch (err) {
-      setError(errorMessage(err) || 'Ошибка при изменении статуса');
-    }
-  };
-
-  const handleEdit = () => {
-    setEditState(true);
-    setEditText(todo.title);
-  };
-
-  const handleCancel = () => {
-    setEditState(false);
-    setEditText('');
-  };
-
-  const removeTodo = async (id: number) => {
-    try {
-      await deleteTodo(id);
-      loadTodos();
-    } catch (err) {
-      setError(errorMessage(err) || 'Ошибка при удалении задачи');
+      onError('');
+    } catch (err: unknown) {
+      onError(errorMessage(err) || 'Ошибка при изменении статуса');
     }
   };
 
   return (
-    <form>
-      <li className="item">
-        <input
-          type="checkbox"
-          checked={todo.isDone}
-          onChange={toggleCompleted}
-        />
+    <Card>
+      <Flex align="center" justify="space-between">
+        <Flex align="center" gap="small" flex={1}>
+          <Checkbox checked={todo.isDone} onChange={handleTodoToggle} />
 
-        {editState ? (
-          <input
-            type="text"
-            value={editText}
-            onChange={(e) => setEditText(e.target.value)}
-          />
-        ) : (
-          <span className={todo.isDone ? 'done' : ''}>{todo.title}</span>
-        )}
-
-        <div className="buttons">
-          {editState ? (
+          {editText ? (
             <>
-              <button
-                className="save"
-                type="button"
-                onClick={() => handleSave()}
+              <Form
+                initialValues={{ title: todo.title }}
+                form={form}
+                onFinish={handleTodoSave}
+                layout="inline"
               >
-                Сохранить
-              </button>
-              <button className="cancel" type="button" onClick={handleCancel}>
-                Отмена
-              </button>
+                <Form.Item name="title" rules={titleRules}>
+                  <Input />
+                </Form.Item>
+
+                <Button
+                  type="primary"
+                  size="small"
+                  htmlType="submit"
+                  icon={<SaveOutlined />}
+                />
+
+                <Button
+                  type="primary"
+                  color="danger"
+                  variant="solid"
+                  size="small"
+                  icon={<CloseOutlined />}
+                  onClick={handleTodoEditCancel}
+                />
+              </Form>
             </>
           ) : (
             <>
-              <button
-                className="edit"
-                type="button"
-                onClick={() => {
-                  handleEdit();
-                }}
-              >
-                <img src={iconEdit} alt="edit" />
-              </button>
-              <button
-                className="del"
-                type="button"
-                onClick={() => removeTodo(todo.id)}
-              >
-                <img src={inconDel} alt="удалить" />
-              </button>
+              <Typography.Text>{todo.title}</Typography.Text>
+
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                size="small"
+                onClick={handleTodoEditStart}
+              />
+
+              <Button
+                type="primary"
+                color="danger"
+                variant="solid"
+                icon={<DeleteOutlined />}
+                size="small"
+                onClick={handleTodoDelete}
+              />
             </>
           )}
-        </div>
-      </li>
-    </form>
+        </Flex>
+      </Flex>
+    </Card>
   );
-}
+});
+
+export default ItemTodo;

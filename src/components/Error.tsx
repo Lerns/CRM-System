@@ -1,20 +1,18 @@
-interface ErrorPrors {
+interface ErrorProps {
   title: string;
   message: string;
   onClose: () => void;
 }
 
-export default function Error({ title, message }: ErrorPrors) {
-  return (
-    <div className="error">
-      <h2>{title}</h2>
-      <p>{message}</p>
+import { Alert } from 'antd';
 
-      <div id="confirmation-actions">
-        <button onClick={() => window.location.reload()} className="button">
-          Okay
-        </button>
-      </div>
-    </div>
+export default function Error({ title, message, onClose }: ErrorProps) {
+  return (
+    <Alert
+      type="error"
+      message={title}
+      description={message}
+      onClose={onClose}
+    />
   );
 }

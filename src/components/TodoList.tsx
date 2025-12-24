@@ -1,33 +1,27 @@
 import ItemTodo from './ItemTodo';
-import './TodoList.scss';
-import type { Todo, Filter } from '../types/todo';
+
+import { List } from 'antd';
+
+import type { Todo, Filter } from '../helpers/types';
 
 interface TodoListProps {
   todos: Todo[];
-  loading: boolean;
   loadTodos: (filter?: Filter) => Promise<void>;
-  setError: (message: string) => void;
+  onError: (message: string) => void;
 }
-export default function TodoList({
-  todos,
-  loading,
-  loadTodos,
-  setError,
-}: TodoListProps) {
+
+export default function TodoList({ todos, loadTodos, onError }: TodoListProps) {
   return (
-    <ul className="task">
-      {loading ? (
-        <li>Идет загрузка, ожидайте</li>
-      ) : (
-        todos.map((todo) => (
-          <ItemTodo
-            key={todo.id}
-            todo={todo}
-            loadTodos={loadTodos}
-            setError={setError}
-          />
-        ))
+    <List
+      dataSource={todos}
+      renderItem={(todo) => (
+        <ItemTodo
+          key={todo.id}
+          todo={todo}
+          loadTodos={loadTodos}
+          onError={onError}
+        />
       )}
-    </ul>
+    />
   );
 }

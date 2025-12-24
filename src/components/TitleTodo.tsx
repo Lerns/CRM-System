@@ -1,47 +1,51 @@
-import { useState } from 'react';
+import { memo } from 'react';
 
-import { createTodo } from '../API/http';
-import { validateTodoTitle } from '../helpers/validation';
+import { createTodo } from '../api/http';
 import { errorMessage } from '../helpers/errorMessage';
-import type { Filter } from '../types/todo';
+import { titleRules } from '../helpers/validation';
 
-import './TitleTodo.scss';
+import { Form, Input, Button } from 'antd';
 
-interface titleTodoProps {
+import type { Filter } from '../helpers/types';
+
+interface TitleTodoProps {
   loadTodos: (filter?: Filter) => Promise<void>;
-  setError: (message: string) => void;
+  onError: (message: string) => void;
 }
 
-export default function TitleTodo({ loadTodos, setError }: titleTodoProps) {
-  const [title, setTitle] = useState<string>('');
+const TitleTodo = memo(({ loadTodos, onError }: TitleTodoProps) => {
+  const [form] = Form.useForm();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const validationError = validateTodoTitle(title);
-    if (validationError) {
-      return setError(validationError);
-    }
-
+  const handleTodoCreate = async (value: { title: string }) => {
+    const title = value.title.trim();
     try {
       await createTodo(title);
-      setTitle('');
-      loadTodos();
-      setError('');
+      form.resetFields();
+      onError('');
+      await loadTodos();
     } catch (err: unknown) {
-      setError(errorMessage(err) || 'Ошибка');
+      onError(errorMessage(err) || 'Ошибка');
     }
   };
 
   return (
-    <form className="add" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="title"
-        placeholder="Task To Be Done..."
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <button>Add</button>
-    </form>
+    <Form
+      autoComplete="off"
+      layout="inline"
+      form={form}
+      name="todo"
+      onFinish={handleTodoCreate}
+    >
+      <Form.Item validateTrigger="onSubmit" name="title" rules={titleRules}>
+        <Input autoComplete="off" placeholder="Введите текст..." />
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Добавить
+        </Button>
+      </Form.Item>
+    </Form>
   );
-}
+});
+
+export default TitleTodo;
