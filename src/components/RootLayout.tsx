@@ -37,7 +37,9 @@ const items: MenuItem[] = [
 export const RootLayout = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const location = useLocation();
-  const hideLayout = ['/login', '/registration'].includes(location.pathname);
+  const hideLayout = ['/login', '/registration', '/'].includes(
+    location.pathname,
+  );
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {!hideLayout && (
