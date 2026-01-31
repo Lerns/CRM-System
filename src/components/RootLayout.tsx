@@ -9,9 +9,9 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
   {
-    key: '/',
+    key: '/todo',
     label: (
-      <NavLink to="/" end>
+      <NavLink to="/todo" end>
         Список задач
       </NavLink>
     ),
@@ -24,24 +24,36 @@ const items: MenuItem[] = [
       </NavLink>
     ),
   },
+  {
+    key: '/login',
+    label: (
+      <NavLink to="/login" end>
+        Вход
+      </NavLink>
+    ),
+  },
 ];
 
 export const RootLayout = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const location = useLocation();
-
+  const hideLayout = ['/login', '/registration'].includes(location.pathname);
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={items}
-        />
-      </Sider>
+      {!hideLayout && (
+        <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            items={items}
+          />
+        </Sider>
+      )}
+
       <Layout>
-        <Header style={{ padding: 0 }} />
+        {!hideLayout && <Header style={{ padding: 0 }} />}
+
         <Content>
           <Outlet />
         </Content>

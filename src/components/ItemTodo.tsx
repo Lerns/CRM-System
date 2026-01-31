@@ -4,7 +4,7 @@ import { putTodo, deleteTodo } from '../api/http';
 import { errorMessage } from '../helpers/errorMessage';
 import { titleRules } from '../helpers/validation';
 
-import type { Todo, Filter } from '../helpers/types';
+import type { Todo, Filter } from '../types/types';
 
 import { Button, Input, Card, Checkbox, Typography, Form, Flex } from 'antd';
 

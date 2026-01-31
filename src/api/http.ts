@@ -1,11 +1,11 @@
-import { api } from './axios.js';
+import { api } from './axios';
 import type {
   Todo,
   TodoRequest,
   Stats,
   Filter,
   MetaResponse,
-} from '../helpers/types.ts';
+} from '../types/types';
 
 export async function fetchTodo(
   filter: Filter = 'all',

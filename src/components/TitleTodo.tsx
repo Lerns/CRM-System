@@ -6,7 +6,7 @@ import { titleRules } from '../helpers/validation';
 
 import { Form, Input, Button } from 'antd';
 
-import type { Filter } from '../helpers/types';
+import type { Filter } from '../types/types';
 
 interface TitleTodoProps {
   loadTodos: (filter?: Filter) => Promise<void>;
