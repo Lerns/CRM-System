@@ -1,8 +1,8 @@
 import { useAppDispatch, useAppSelector } from '../store/hook';
 import { JSX, useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { login, logout } from '../store/slices/authSlice';
-import authTokenStore from '../auth/authTokenStore';
+import { login, logout } from '../store/auth/slices/authSlice';
+import authTokenStore from '../store/auth/authTokenStore';
 import { refreshTokenUser } from '../api/auth';
 
 export default function ProtectedRouter({
@@ -16,8 +16,8 @@ export default function ProtectedRouter({
 
   useEffect(() => {
     const checkAuth = async () => {
-      const refreshToken = localStorage.getItem('refreshToken');
       const accessToken = authTokenStore.getAccessToken();
+      const refreshToken = localStorage.getItem('refreshToken');
 
       if (refreshToken) {
         if (!accessToken) {

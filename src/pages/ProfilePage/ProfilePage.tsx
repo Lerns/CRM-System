@@ -3,21 +3,32 @@ import { useEffect, useState } from 'react';
 
 import { logoutUser, profileUser } from '../../api/auth';
 import { errorMessage } from '../../helpers/errorMessage';
-import { logout } from '../../store/slices/authSlice';
+import { logout } from '../../store/auth/slices/authSlice';
 import { useAppDispatch } from '../../store/hook';
 
-import { Alert, Button, Flex, Form, Input, Typography } from 'antd';
-import authTokenStore from '../../auth/authTokenStore';
+import {
+  Alert,
+  Button,
+  Card,
+  Flex,
+  Form,
+  Input,
+  Space,
+  Typography,
+} from 'antd';
+import authTokenStore from '../../store/auth/authTokenStore';
+import { Profile } from '../../types/typesAuth';
+import { WatchFileKind } from 'typescript';
 
 export default function ProfilePage() {
-  const [form] = Form.useForm();
   const [error, setError] = useState<string>('');
+  const [profile, setProfile] = useState<Profile | null>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const handleLogouyt = () => {
+  const handleLogouyt = async () => {
     try {
-      logoutUser();
+      await logoutUser();
       authTokenStore.clearAccessToken();
       localStorage.removeItem('refreshToken');
       dispatch(logout());
@@ -30,46 +41,49 @@ export default function ProfilePage() {
   useEffect(() => {
     async function fetchProfile() {
       try {
-        const data = await profileUser();
-        console.log('profile', data);
-        form.setFieldsValue({
-          username: data.username,
-          email: data.email,
-          phoneNumber: data.phoneNumber,
-        });
+        const profileData = await profileUser();
+        setProfile(profileData);
       } catch (err: unknown) {
         setError(errorMessage(err));
       }
     }
     fetchProfile();
-  }, [form]);
-  return (
-    <Flex style={{ justifyContent: 'center', alignItems: 'center' }}>
-      <Form form={form} layout="vertical">
-        <Form.Item name="username" label="Имя пользователя">
-          <Input />
-        </Form.Item>
-        <Form.Item name="email" label="Email">
-          <Input />
-        </Form.Item>
-        <Form.Item name="phoneNumber" label="Телефон">
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" onClick={handleLogouyt}>
-            Выйти
-          </Button>
-        </Form.Item>
-      </Form>
+  }, []);
 
-      {error && (
-        <Alert
-          message={error}
-          type="error"
-          showIcon
-          style={{ marginBottom: 16 }}
-        />
-      )}
-    </Flex>
+  if (!profile) {
+    return null;
+  }
+  if (error) {
+    return (
+      <Alert
+        message={error}
+        type="error"
+        showIcon
+        style={{ marginBottom: 16 }}
+      />
+    );
+  }
+
+  return (
+    <Card title="Профиль" style={{ width: 500 }}>
+      <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <Typography.Text strong>Имя пользователя:</Typography.Text>
+        <Typography.Text>{profile.username}</Typography.Text>
+
+        <Typography.Text strong>Email:</Typography.Text>
+        <Typography.Text>{profile.email}</Typography.Text>
+
+        <Typography.Text strong>Телефон:</Typography.Text>
+        <Typography.Text>{profile.phoneNumber || 'Не указан'}</Typography.Text>
+
+        <Button
+          type="primary"
+          onClick={handleLogouyt}
+          style={{ marginTop: 16 }}
+        >
+          Выйти
+        </Button>
+      </Space>
+    </Card>
   );
 }

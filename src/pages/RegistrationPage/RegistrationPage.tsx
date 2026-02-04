@@ -68,7 +68,7 @@ export default function RegistrationPage() {
           padding: '32px 16px',
         }}
       >
-        <Card bordered={false}>
+        <Card>
           <Title level={2} style={{ textAlign: 'center' }}>
             Регистрация
           </Title>

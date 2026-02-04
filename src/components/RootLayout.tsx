@@ -24,14 +24,7 @@ const items: MenuItem[] = [
       </NavLink>
     ),
   },
-  {
-    key: '/login',
-    label: (
-      <NavLink to="/login" end>
-        Вход
-      </NavLink>
-    ),
-  },
+ 
 ];
 
 export const RootLayout = () => {
@@ -40,6 +33,7 @@ export const RootLayout = () => {
   const hideLayout = ['/login', '/registration', '/'].includes(
     location.pathname,
   );
+  
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {!hideLayout && (
@@ -56,7 +50,7 @@ export const RootLayout = () => {
       <Layout>
         {!hideLayout && <Header style={{ padding: 0 }} />}
 
-        <Content>
+        <Content style={{ padding: 24}}>
           <Outlet />
         </Content>
         <Footer />

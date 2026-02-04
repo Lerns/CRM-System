@@ -3,13 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Checkbox, Form, Input, Typography, Button, Flex, Alert } from 'antd';
 
 import { useAppDispatch } from '../../store/hook';
-import { login } from '../../store/slices/authSlice';
+import { login } from '../../store/auth/slices/authSlice';
 import { loginUser } from '../../api/auth';
 import { errorMessage } from '../../helpers/errorMessage';
 
 import type { AuthData, Token } from '../../types/typesAuth';
 import illustration from '../../../public/illustration.svg';
-import authTokenStore from '../../auth/authTokenStore';
+import authTokenStore from '../../store/auth/authTokenStore';
 
 const { Title, Text } = Typography;
 
@@ -65,10 +65,10 @@ export default function LoginPage() {
         >
           <Form.Item
             name="login"
-            label="Email"
-            rules={[{ required: true, message: 'Введите email' }]}
+            label="Login"
+            rules={[{ required: true, message: 'Введите логин' }]}
           >
-            <Input placeholder="mail@abc.com" />
+            <Input placeholder="login" />
           </Form.Item>
 
           <Form.Item
