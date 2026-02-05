@@ -160,6 +160,10 @@ export default function RegistrationPage() {
             </Form>
           )}
         </Card>
+
+        <Link to="/login" style={{ marginTop: 10, textAlign: 'center' }}>
+          Вернуться к авторизации
+        </Link>
       </Flex>
     </Flex>
   );
