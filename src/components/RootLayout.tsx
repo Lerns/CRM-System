@@ -24,19 +24,18 @@ const items: MenuItem[] = [
       </NavLink>
     ),
   },
- 
 ];
 
 export const RootLayout = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const location = useLocation();
-  const hideLayout = ['/login', '/registration', '/'].includes(
+  const isHideLayout = ['/login', '/registration', '/'].includes(
     location.pathname,
   );
-  
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      {!hideLayout && (
+      {!isHideLayout && (
         <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
           <Menu
             theme="dark"
@@ -48,9 +47,9 @@ export const RootLayout = () => {
       )}
 
       <Layout>
-        {!hideLayout && <Header style={{ padding: 0 }} />}
+        {!isHideLayout && <Header style={{ padding: 0 }} />}
 
-        <Content style={{ padding: 24}}>
+        <Content style={{ padding: 24 }}>
           <Outlet />
         </Content>
         <Footer />

@@ -1,10 +1,10 @@
 import { useState, memo } from 'react';
 
 import { putTodo, deleteTodo } from '../api/http';
-import { errorMessage } from '../helpers/errorMessage';
+import { getErrorMessage } from '../helpers/errorMessage';
 import { titleRules } from '../helpers/validation';
 
-import type { Todo, Filter } from '../types/types';
+import type { Todo, Filter } from '../types/typesTodo';
 
 import { Button, Input, Card, Checkbox, Typography, Form, Flex } from 'antd';
 
@@ -33,7 +33,7 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
       await loadTodos();
       onError('');
     } catch (err: unknown) {
-      onError(errorMessage(err) || 'Ошибка при обновлении задачи');
+      onError(getErrorMessage(err) || 'Ошибка при обновлении задачи');
     }
   };
 
@@ -51,7 +51,7 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
       await deleteTodo(todo.id);
       await loadTodos();
     } catch (err: unknown) {
-      onError(errorMessage(err) || 'Ошибка при удалении задачи');
+      onError(getErrorMessage(err) || 'Ошибка при удалении задачи');
     }
   };
 
@@ -61,7 +61,7 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
       await loadTodos();
       onError('');
     } catch (err: unknown) {
-      onError(errorMessage(err) || 'Ошибка при изменении статуса');
+      onError(getErrorMessage(err) || 'Ошибка при изменении статуса');
     }
   };
 

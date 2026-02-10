@@ -1,8 +1,8 @@
-import { useAppDispatch, useAppSelector } from '../store/hook';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { JSX, useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { login, logout } from '../store/auth/slices/authSlice';
-import authTokenStore from '../store/auth/authTokenStore';
+import authTokenStore from '../api/authTokenStore';
 import { refreshTokenUser } from '../api/auth';
 
 export default function ProtectedRouter({
@@ -12,7 +12,7 @@ export default function ProtectedRouter({
 }) {
   const dispatch = useAppDispatch();
   const isAuthorized = useAppSelector((state) => state.auth.isAuthorized);
-  const [checked, setChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState<boolean>(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -42,13 +42,13 @@ export default function ProtectedRouter({
         authTokenStore.clearAccessToken();
         dispatch(logout());
       }
-      setChecked(true);
+      setIsChecked(true);
     };
 
     checkAuth();
   }, [dispatch]);
 
-  if (!checked) return null;
+  if (!isChecked) return null;
 
   if (!isAuthorized) return <Navigate to="/login" replace />;
 

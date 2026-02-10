@@ -14,9 +14,7 @@ export async function loginUser(data: AuthData): Promise<Token> {
   return response.data;
 }
 
-export async function registrationUser(
-  data: UserRegistration,
-): Promise<Profile> {
+export async function registerUser(data: UserRegistration): Promise<Profile> {
   const response = await api.post<Profile>('/auth/signup', data);
   return response.data;
 }

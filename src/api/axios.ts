@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { refreshTokenUser } from './auth';
-import authTokenStore from '../store/auth/authTokenStore';
+import authTokenStore from './authTokenStore';
 
 export const api = axios.create({
   baseURL: 'https://easydev.club/api/v1',

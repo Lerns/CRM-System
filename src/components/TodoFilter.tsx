@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import type { Filter, Stats } from '../types/types';
+import type { Filter, Stats } from '../types/typesTodo';
 
 import { Flex, Tabs } from 'antd';
 import type { TabsProps } from 'antd';

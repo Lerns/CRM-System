@@ -1,24 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import { logoutUser, profileUser } from '../../api/auth';
-import { errorMessage } from '../../helpers/errorMessage';
+import { useAppDispatch } from '../../store/hooks';
+import authTokenStore from '../../api/authTokenStore';
 import { logout } from '../../store/auth/slices/authSlice';
-import { useAppDispatch } from '../../store/hook';
-
-import {
-  Alert,
-  Button,
-  Card,
-  Flex,
-  Form,
-  Input,
-  Space,
-  Typography,
-} from 'antd';
-import authTokenStore from '../../store/auth/authTokenStore';
+import { logoutUser, profileUser } from '../../api/auth';
+import { getErrorMessage } from '../../helpers/errorMessage';
 import { Profile } from '../../types/typesAuth';
-import { WatchFileKind } from 'typescript';
+
+import { Alert, Button, Card, Space, Typography } from 'antd';
 
 export default function ProfilePage() {
   const [error, setError] = useState<string>('');
@@ -26,7 +16,7 @@ export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const handleLogouyt = async () => {
+  const handleLogout = async () => {
     try {
       await logoutUser();
       authTokenStore.clearAccessToken();
@@ -34,7 +24,7 @@ export default function ProfilePage() {
       dispatch(logout());
       navigate('/login');
     } catch (err: unknown) {
-      setError(errorMessage(err));
+      setError(getErrorMessage(err));
     }
   };
 
@@ -44,7 +34,7 @@ export default function ProfilePage() {
         const profileData = await profileUser();
         setProfile(profileData);
       } catch (err: unknown) {
-        setError(errorMessage(err));
+        setError(getErrorMessage(err));
       }
     }
     fetchProfile();
@@ -76,11 +66,7 @@ export default function ProfilePage() {
         <Typography.Text strong>Телефон:</Typography.Text>
         <Typography.Text>{profile.phoneNumber || 'Не указан'}</Typography.Text>
 
-        <Button
-          type="primary"
-          onClick={handleLogouyt}
-          style={{ marginTop: 16 }}
-        >
+        <Button type="primary" onClick={handleLogout} style={{ marginTop: 16 }}>
           Выйти
         </Button>
       </Space>

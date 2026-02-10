@@ -1,12 +1,12 @@
 import { memo } from 'react';
 
 import { createTodo } from '../api/http';
-import { errorMessage } from '../helpers/errorMessage';
+import { getErrorMessage } from '../helpers/errorMessage';
 import { titleRules } from '../helpers/validation';
 
 import { Form, Input, Button } from 'antd';
 
-import type { Filter } from '../types/types';
+import type { Filter } from '../types/typesTodo';
 
 interface TitleTodoProps {
   loadTodos: (filter?: Filter) => Promise<void>;
@@ -24,7 +24,7 @@ const TitleTodo = memo(({ loadTodos, onError }: TitleTodoProps) => {
       onError('');
       await loadTodos();
     } catch (err: unknown) {
-      onError(errorMessage(err) || 'Ошибка');
+      onError(getErrorMessage(err) || 'Ошибка');
     }
   };
 

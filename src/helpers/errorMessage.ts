@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export function errorMessage(err: unknown): string {
+export function getErrorMessage(err: unknown): string {
   if (axios.isAxiosError(err)) {
     switch (err.response?.status) {
       case 400:

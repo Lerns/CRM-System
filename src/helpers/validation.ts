@@ -1,4 +1,3 @@
-import { transform } from 'typescript';
 import {
   MIN_TITLE_LENGTH,
   MAX_TITLE_LENGTH,
@@ -7,6 +6,7 @@ import {
   MIN_PASSWORD_LENGTH,
   MAX_PASSWORD_LENGTH,
 } from './constants';
+import type { RuleObject } from 'antd/es/form';
 
 const trim = (value: string) => value.trim();
 
@@ -63,9 +63,9 @@ export const passwordRules = [
   },
 ];
 
-export const emailRules = [
+export const emailRules: RuleObject[] = [
   { required: true, message: 'Введите email', transform: trim },
-  { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Некорректный email' },
+  { type: 'email', message: 'Некорректный email' },
 ];
 export const phoneRules = [
   {

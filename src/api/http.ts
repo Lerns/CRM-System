@@ -5,7 +5,7 @@ import type {
   Stats,
   Filter,
   MetaResponse,
-} from '../types/types';
+} from '../types/typesTodo';
 
 export async function fetchTodo(
   filter: Filter = 'all',

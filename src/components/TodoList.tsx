@@ -2,7 +2,7 @@ import ItemTodo from './ItemTodo';
 
 import { List } from 'antd';
 
-import type { Todo, Filter } from '../types/types';
+import type { Todo, Filter } from '../types/typesTodo';
 
 interface TodoListProps {
   todos: Todo[];

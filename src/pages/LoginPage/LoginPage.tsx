@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Checkbox, Form, Input, Typography, Button, Flex, Alert } from 'antd';
 
-import { useAppDispatch } from '../../store/hook';
+import { useAppDispatch } from '../../store/hooks';
 import { login } from '../../store/auth/slices/authSlice';
+import authTokenStore from '../../api/authTokenStore';
 import { loginUser } from '../../api/auth';
-import { errorMessage } from '../../helpers/errorMessage';
-
+import { getErrorMessage } from '../../helpers/errorMessage';
 import type { AuthData, Token } from '../../types/typesAuth';
+
+import { Checkbox, Form, Input, Typography, Button, Flex, Alert } from 'antd';
 import illustration from '../../../public/illustration.svg';
-import authTokenStore from '../../store/auth/authTokenStore';
 
 const { Title, Text } = Typography;
 
@@ -17,13 +17,13 @@ export default function LoginPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   const [form] = Form.useForm();
 
   const handleLogin = async (values: AuthData) => {
-    setLoading(true);
+    setIsLoading(true);
     setError('');
 
     try {
@@ -34,9 +34,9 @@ export default function LoginPage() {
       form.resetFields();
       navigate('/todo');
     } catch (err: unknown) {
-      setError(errorMessage(err));
+      setError(getErrorMessage(err));
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -84,7 +84,7 @@ export default function LoginPage() {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading} block>
+            <Button type="primary" htmlType="submit" loading={isLoading} block>
               Login
             </Button>
           </Form.Item>

@@ -1,3 +1,19 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
+import { UserRegistration } from '../../types/typesAuth';
+import { registerUser } from '../../api/auth';
+
+import illustration from '../../../public/illustration.svg';
+import { getErrorMessage } from '../../helpers/errorMessage';
+import {
+  emailRules,
+  loginRules,
+  passwordRules,
+  phoneRules,
+  usernameRules,
+} from '../../helpers/validation';
+
 import {
   Button,
   Form,
@@ -8,32 +24,19 @@ import {
   Alert,
   Card,
 } from 'antd';
-import { Link } from 'react-router-dom';
-import illustration from '../../../public/illustration.svg';
-import { errorMessage } from '../../helpers/errorMessage';
-import { useState } from 'react';
-import { UserRegistration } from '../../types/typesAuth';
-import { registrationUser } from '../../api/auth';
-import {
-  emailRules,
-  loginRules,
-  passwordRules,
-  phoneRules,
-  usernameRules,
-} from '../../helpers/validation';
+
+interface RegistrationValues extends UserRegistration {
+  passwordConfirm: string;
+}
 
 const { Title, Text } = Typography;
 
 export default function RegistrationPage() {
   const [form] = Form.useForm();
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
-
-  interface RegistrationValues extends UserRegistration {
-    passwordConfirm: string;
-  }
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   const handleRegistration = async (value: RegistrationValues) => {
     const { passwordConfirm, ...data } = value;
@@ -42,17 +45,17 @@ export default function RegistrationPage() {
       delete data.phoneNumber;
     }
 
-    setLoading(true);
+    setIsLoading(true);
     setError('');
 
     try {
-      await registrationUser(data);
+      await registerUser(data);
       setIsSuccess(true);
       form.resetFields();
     } catch (err: unknown) {
-      setError(errorMessage(err));
+      setError(getErrorMessage(err));
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -151,7 +154,7 @@ export default function RegistrationPage() {
                 <Button
                   type="primary"
                   htmlType="submit"
-                  loading={loading}
+                  loading={isLoading}
                   block
                 >
                   Зарегистрироваться

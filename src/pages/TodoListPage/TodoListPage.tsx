@@ -6,8 +6,8 @@ import TodoList from '../../components/TodoList';
 import Error from '../../components/Error';
 
 import { fetchTodo } from '../../api/http';
-import type { Stats, Filter, Todo } from '../../types/types';
-import { errorMessage } from '../../helpers/errorMessage';
+import type { Stats, Filter, Todo } from '../../types/typesTodo';
+import { getErrorMessage } from '../../helpers/errorMessage';
 import { AUTO_REFRESH_DELAY } from '../../helpers/constants';
 
 export default function TodoListPage() {
@@ -28,7 +28,7 @@ export default function TodoListPage() {
       setStatus(data);
       setError('');
     } catch (err: unknown) {
-      setError(errorMessage(err));
+      setError(getErrorMessage(err));
     }
   }, [filter]);
 
