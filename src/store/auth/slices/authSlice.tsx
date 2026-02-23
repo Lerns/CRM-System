@@ -47,6 +47,8 @@ const authSlice = createSlice({
       .addCase(loginThunk.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload ?? 'Ошибка авторизации';
+        state.isAuthorized = false;
+        state.user = null;
       })
 
       .addCase(fetchProfileThunk.pending, (state) => {

@@ -20,7 +20,7 @@ export default function ProtectedRouter() {
       />
     );
   }
-  if (!isAuthorized) return <Navigate to="/login" replace />;
-
+    if (!isAuthorized) return <Navigate to="/login" replace />;
+    
   return <Outlet />;
 }
