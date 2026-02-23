@@ -7,7 +7,7 @@ import type {
   MetaResponse,
 } from '../types/typesTodo';
 
-export async function fetchTodo(
+export async function getTodos(
   filter: Filter = 'all',
 ): Promise<MetaResponse<Todo, Stats>> {
   const response = await api.get('/todos', {
@@ -21,7 +21,7 @@ export async function createTodo(title: string): Promise<Todo> {
   return data;
 }
 
-export async function putTodo(id: number, data: TodoRequest): Promise<Todo> {
+export async function updateTodo(id: number, data: TodoRequest): Promise<Todo> {
   const response = await api.put(`/todos/${id}`, data);
   return response.data;
 }

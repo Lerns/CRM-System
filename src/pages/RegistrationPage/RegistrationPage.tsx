@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { UserRegistration } from '../../types/typesAuth';
-import { registerUser } from '../../api/auth';
+import { register } from '../../api/auth';
 
 import illustration from '../../../public/illustration.svg';
 import { getErrorMessage } from '../../helpers/errorMessage';
@@ -49,7 +49,7 @@ export default function RegistrationPage() {
     setError('');
 
     try {
-      await registerUser(data);
+      await register(data);
       setIsSuccess(true);
       form.resetFields();
     } catch (err: unknown) {

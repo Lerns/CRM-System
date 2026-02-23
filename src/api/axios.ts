@@ -1,13 +1,16 @@
 import axios from 'axios';
-import { refreshTokenUser } from './auth';
 import authTokenStore from './authTokenStore';
-
+import type { Token } from '../types/typesAuth';
 export const api = axios.create({
   baseURL: 'https://easydev.club/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
   timeout: 5000,
+});
+
+const refreshAPI = axios.create({
+  baseURL: 'https://easydev.club/api/v1',
 });
 
 api.interceptors.request.use((config) => {
@@ -27,21 +30,22 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._isRetry) {
       originalRequest._isRetry = true;
-
       const refreshToken = localStorage.getItem('refreshToken');
+
       if (!refreshToken) {
-        localStorage.removeItem('accessToken');
+        authTokenStore.clearAccessToken();
         localStorage.removeItem('refreshToken');
+        window.location.href = '/login';
         return Promise.reject(error);
       }
-
       try {
-        const { accessToken, refreshToken: newRefreshToken } =
-          await refreshTokenUser({ refreshToken });
+        const response = await refreshAPI.post<Token>('/auth/refresh', {
+          refreshToken,
+        });
 
-        authTokenStore.setAccessToken(accessToken);
-        localStorage.setItem('refreshToken', newRefreshToken);
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        authTokenStore.setAccessToken(response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
+        originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
 
         return api.request(originalRequest);
       } catch (err) {

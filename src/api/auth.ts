@@ -14,28 +14,31 @@ export async function loginUser(data: AuthData): Promise<Token> {
   return response.data;
 }
 
-export async function registerUser(data: UserRegistration): Promise<Profile> {
+export async function register(data: UserRegistration): Promise<Profile> {
   const response = await api.post<Profile>('/auth/signup', data);
   return response.data;
 }
 
-export async function profileUser(): Promise<Profile> {
-  const response = await api.get<Profile>('/user/profile');
+export async function getProfile(): Promise<ProfileRequest> {
+  const response = await api.get<ProfileRequest>('/user/profile');
   return response.data;
 }
 
-export async function updateProfileUser(
-  data: ProfileRequest,
-): Promise<Profile> {
-  const response = await api.put<Profile>('/auth/profile', data);
+export async function updateProfile(data: ProfileRequest): Promise<Profile> {
+  const response = await api.put<Profile>('/user/profile', data);
   return response.data;
 }
 
-export async function refreshTokenUser(data: RefreshToken): Promise<Token> {
+export async function refreshToken(data: RefreshToken): Promise<Token> {
   const response = await api.post<Token>('/auth/refresh', data);
   return response.data;
 }
 
 export async function logoutUser(): Promise<void> {
   await api.post('/user/logout');
+}
+
+export async function refreshTokenRequest(data: RefreshToken): Promise<Token> {
+  const response = await api.post<Token>('/auth/refresh', data);
+  return response.data;
 }

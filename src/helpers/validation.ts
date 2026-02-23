@@ -38,7 +38,7 @@ export const usernameRules = [
     message: `Максимум ${MAX_USERNAME_LENGTH} символов`,
   },
   {
-    pattern: /^[a-zA-Zа-яА-Я\s]+$/,
+    pattern: /^[a-zA-Zа-яА-ЯёЁ\s]+$/,
     message: 'Русский/латинский алфавит',
   },
 ];

@@ -1,15 +1,15 @@
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { useAppDispatch } from '../../store/hooks';
-import { login } from '../../store/auth/slices/authSlice';
-import authTokenStore from '../../api/authTokenStore';
-import { loginUser } from '../../api/auth';
-import { getErrorMessage } from '../../helpers/errorMessage';
-import type { AuthData, Token } from '../../types/typesAuth';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { loginThunk } from '../../store/auth/thunks/loginThunk';
 
-import { Checkbox, Form, Input, Typography, Button, Flex, Alert } from 'antd';
+import type { AuthData } from '../../types/typesAuth';
+
+import { Checkbox, Form, Input, Typography, Button, Flex } from 'antd';
 import illustration from '../../../public/illustration.svg';
+import { clearError } from '../../store/auth/slices/authSlice';
+import Error from '../../components/Error';
+import { getErrorMessage } from '../../helpers/errorMessage';
 
 const { Title, Text } = Typography;
 
@@ -17,28 +17,20 @@ export default function LoginPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-
+  const { status, error } = useAppSelector((state) => state.auth);
   const [form] = Form.useForm();
 
   const handleLogin = async (values: AuthData) => {
-    setIsLoading(true);
-    setError('');
-
     try {
-      const { accessToken, refreshToken }: Token = await loginUser(values);
-      authTokenStore.setAccessToken(accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      dispatch(login());
+      await dispatch(loginThunk(values)).unwrap();
       form.resetFields();
-      navigate('/todo');
+      navigate('/todo', { replace: true });
     } catch (err: unknown) {
-      setError(getErrorMessage(err));
-    } finally {
-      setIsLoading(false);
+      getErrorMessage(err);
     }
   };
+
+  const isLoading = status === 'loading';
 
   return (
     <Flex style={{ height: '100dvh' }}>
@@ -49,12 +41,7 @@ export default function LoginPage() {
         <Text type="secondary">See what is going on with your business</Text>
 
         {error && (
-          <Alert
-            message={error}
-            type="error"
-            showIcon
-            style={{ marginTop: 16 }}
-          />
+          <Error message={error} onClose={() => dispatch(clearError())} />
         )}
 
         <Form

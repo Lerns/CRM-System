@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import TitleTodo from '../../components/TitleTodo';
+import TitleTodo from '../../components/AddTodo';
 import TodoFilter from '../../components/TodoFilter';
 import TodoList from '../../components/TodoList';
 import Error from '../../components/Error';
 
-import { fetchTodo } from '../../api/http';
+import { getTodos } from '../../api/http';
 import type { Stats, Filter, Todo } from '../../types/typesTodo';
 import { getErrorMessage } from '../../helpers/errorMessage';
 import { AUTO_REFRESH_DELAY } from '../../helpers/constants';
@@ -22,7 +22,7 @@ export default function TodoListPage() {
 
   const loadTodos = useCallback(async () => {
     try {
-      const res = await fetchTodo(filter);
+      const res = await getTodos(filter);
       setTodos(res.data);
       const data = res.info ?? { all: 0, completed: 0, inWork: 0 };
       setStatus(data);
@@ -43,11 +43,11 @@ export default function TodoListPage() {
   return (
     <>
       <TitleTodo loadTodos={loadTodos} onError={setError} />
-      <TodoFilter filter={filter} setFilter={setFilter} status={status} />
+      <TodoFilter filter={filter} onFilterChange={setFilter} status={status} />
       {error && (
         <Error title="Ошибка" message={error} onClose={() => setError('')} />
       )}
-      <TodoList todos={todos} loadTodos={loadTodos} onError={setError} />
+      <TodoList todos={todos} loadTodos={loadTodos} />
     </>
   );
 }

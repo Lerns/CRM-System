@@ -6,18 +6,19 @@ import { titleRules } from '../helpers/validation';
 
 import { Form, Input, Button } from 'antd';
 
-import type { Filter } from '../types/typesTodo';
+import type { Filter, AddTodoFormValues } from '../types/typesTodo';
 
-interface TitleTodoProps {
+interface AddTodoProps {
   loadTodos: (filter?: Filter) => Promise<void>;
   onError: (message: string) => void;
 }
 
-const TitleTodo = memo(({ loadTodos, onError }: TitleTodoProps) => {
-  const [form] = Form.useForm();
+const AddTodo = memo(({ loadTodos, onError }: AddTodoProps) => {
+  const [form] = Form.useForm<{ title: string }>();
 
-  const handleTodoCreate = async (value: { title: string }) => {
+  const handleTodoCreate = async (value: AddTodoFormValues) => {
     const title = value.title.trim();
+
     try {
       await createTodo(title);
       form.resetFields();
@@ -29,14 +30,19 @@ const TitleTodo = memo(({ loadTodos, onError }: TitleTodoProps) => {
   };
 
   return (
-    <Form
+    <Form<AddTodoFormValues>
       autoComplete="off"
       layout="inline"
       form={form}
       name="todo"
       onFinish={handleTodoCreate}
     >
-      <Form.Item validateTrigger="onSubmit" name="title" rules={titleRules}>
+      <Form.Item
+        validateTrigger="onSubmit"
+        name="title"
+        rules={titleRules}
+        normalize={(value) => value.trim()}
+      >
         <Input autoComplete="off" placeholder="Введите текст..." />
       </Form.Item>
       <Form.Item>
@@ -48,4 +54,4 @@ const TitleTodo = memo(({ loadTodos, onError }: TitleTodoProps) => {
   );
 });
 
-export default TitleTodo;
+export default AddTodo;

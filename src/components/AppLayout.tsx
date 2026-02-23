@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+
 import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 
@@ -26,35 +27,31 @@ const items: MenuItem[] = [
   },
 ];
 
-export const RootLayout = () => {
+export const AppLayout = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const location = useLocation();
-  const isHideLayout = ['/login', '/registration', '/'].includes(
-    location.pathname,
-  );
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      {!isHideLayout && (
-        <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
-          <Menu
-            theme="dark"
-            mode="inline"
-            selectedKeys={[location.pathname]}
-            items={items}
-          />
-        </Sider>
-      )}
+      <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={[location.pathname]}
+          items={items}
+        />
+      </Sider>
 
       <Layout>
-        {!isHideLayout && <Header style={{ padding: 0 }} />}
+        <Header style={{ padding: 0 }} />
 
         <Content style={{ padding: 24 }}>
           <Outlet />
         </Content>
+
         <Footer />
       </Layout>
     </Layout>
   );
 };
-export default RootLayout;
+export default AppLayout;

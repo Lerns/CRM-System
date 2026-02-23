@@ -1,11 +1,14 @@
 let accessToken: string | undefined;
 
 const authTokenStore = {
-  getAccessToken: () => accessToken,
-  setAccessToken: (token: string) => {
+  getAccessToken(): string | undefined {
+    return accessToken;
+  },
+
+  setAccessToken(token: string): void {
     accessToken = token;
   },
-  clearAccessToken: () => {
+  clearAccessToken(): void {
     accessToken = undefined;
   },
 };

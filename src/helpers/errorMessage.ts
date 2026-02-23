@@ -2,6 +2,11 @@ import axios from 'axios';
 
 export function getErrorMessage(err: unknown): string {
   if (axios.isAxiosError(err)) {
+    const backendMessage =
+      err.response?.data?.message || err.response?.data?.error;
+    if (backendMessage && typeof backendMessage === 'string') {
+      return backendMessage;
+    }
     switch (err.response?.status) {
       case 400:
         return 'Некорректные данные, проверьте и попробуйте снова';
@@ -14,7 +19,7 @@ export function getErrorMessage(err: unknown): string {
       case 500:
         return 'Внутренняя ошибка сервера';
       default:
-        return `Произошла ошибка. Попробуйте позже.`;
+        return 'Произошла ошибка. Попробуйте позже.';
     }
   }
   if (err instanceof Error) {
