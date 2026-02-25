@@ -28,7 +28,11 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._isRetry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._isRetry &&
+      !originalRequest.url.includes('/auth/refresh')
+    ) {
       originalRequest._isRetry = true;
       const refreshToken = localStorage.getItem('refreshToken');
 
