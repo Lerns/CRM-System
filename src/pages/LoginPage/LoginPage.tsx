@@ -33,10 +33,14 @@ export default function LoginPage() {
   const isLoading = status === 'loading';
 
   return (
-    <Flex style={{ height: '100dvh' }}>
-      <img src={illustration} alt="Login Illustration" />
+    <Flex style={{ minHeight: '100dvh', width: '100%' }}>
+      <img
+        src={illustration}
+        alt="Login Illustration"
+        style={{ objectFit: 'cover', flex: '1', width: '80%' }}
+      />
 
-      <Flex vertical style={{ width: 420, margin: 'auto' }}>
+      <Flex vertical style={{ textAlign: 'center', width: '100%' }}>
         <Title level={1}>Login to your account</Title>
         <Text type="secondary">See what is going on with your business</Text>
 

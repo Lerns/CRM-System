@@ -4,12 +4,14 @@ import { ProfileRequest } from '../../../types/typesAuth';
 import { fetchProfileThunk } from '../thunks/profileThunk';
 import { logoutThunk } from '../thunks/logoutThunk';
 import { initAppThunk } from '../thunks/initAppThunk';
+import { registrationThunk } from '../thunks/registrationThunk';
 
 interface AuthState {
   isAuthorized: boolean;
   user: ProfileRequest | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
+  registrationStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: AuthState = {
@@ -17,6 +19,7 @@ const initialState: AuthState = {
   user: null,
   status: 'idle',
   error: null,
+  registrationStatus: 'idle',
 };
 
 const authSlice = createSlice({
@@ -92,6 +95,18 @@ const authSlice = createSlice({
         state.error = action.payload ?? 'Ошибка инициализации';
         state.isAuthorized = false;
         state.user = null;
+      })
+      .addCase(registrationThunk.pending, (state) => {
+        state.registrationStatus = 'loading';
+        state.error = null;
+      })
+      .addCase(registrationThunk.fulfilled, (state, action) => {
+        state.registrationStatus = 'succeeded';
+        state.error = null;
+      })
+      .addCase(registrationThunk.rejected, (state, action) => {
+        state.registrationStatus = 'failed';
+        state.error = action.payload ?? 'Ошибка регистрации';
       });
   },
 });

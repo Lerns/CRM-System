@@ -1,11 +1,14 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { registrationThunk } from '../../store/auth/thunks/registrationThunk';
 import { UserRegistration } from '../../types/typesAuth';
-import { register } from '../../api/auth';
+
+import { clearError } from '../../store/auth/slices/authSlice';
+import Error from '../../components/Error';
+import { getErrorMessage } from '../../helpers/errorMessage';
 
 import illustration from '../../../public/illustration.svg';
-import { getErrorMessage } from '../../helpers/errorMessage';
+
 import {
   emailRules,
   loginRules,
@@ -29,52 +32,45 @@ interface RegistrationValues extends UserRegistration {
   passwordConfirm: string;
 }
 
-const { Title, Text } = Typography;
-
 export default function RegistrationPage() {
-  const [form] = Form.useForm();
+  const dispatch = useAppDispatch();
+  const { registrationStatus, error } = useAppSelector((state) => state.auth);
+  const [form] = Form.useForm<RegistrationValues>();
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const { Title, Text } = Typography;
+
+  const isLoading = registrationStatus === 'loading';
+  const isSuccess = registrationStatus === 'succeeded';
 
   const handleRegistration = async (value: RegistrationValues) => {
     const { passwordConfirm, ...data } = value;
 
-    if (!data.phoneNumber?.trim()) {
-      delete data.phoneNumber;
-    }
-
-    setIsLoading(true);
-    setError('');
-
     try {
-      await register(data);
-      setIsSuccess(true);
+      await dispatch(registrationThunk(data)).unwrap();
       form.resetFields();
     } catch (err: unknown) {
-      setError(getErrorMessage(err));
-    } finally {
-      setIsLoading(false);
+      getErrorMessage(err);
     }
   };
 
   return (
-    <Flex style={{ minHeight: '100dvh' }}>
-      <img src={illustration} alt="Registration Illustration" />
+    <Flex style={{ minHeight: '100dvh', width: '100%' }}>
+      <img
+        src={illustration}
+        alt="Registration Illustration"
+        style={{ objectFit: 'cover', flex: '1', width: '60%' }}
+      />
 
       <Flex
         vertical
         style={{
           width: '100%',
-          maxWidth: 500,
-          padding: '32px 16px',
+          padding: '32px 32px',
+          maxWidth: 700,
         }}
       >
-        <Card>
-          <Title level={2} style={{ textAlign: 'center' }}>
-            Регистрация
-          </Title>
+        <Card style={{ textAlign: 'center', width: '100%' }}>
+          <Title level={2}>Регистрация</Title>
           <Text
             type="secondary"
             style={{ display: 'block', textAlign: 'center', marginBottom: 24 }}
@@ -83,12 +79,7 @@ export default function RegistrationPage() {
           </Text>
 
           {error && (
-            <Alert
-              message={error}
-              type="error"
-              showIcon
-              style={{ marginBottom: 16 }}
-            />
+            <Error message={error} onClose={() => dispatch(clearError())} />
           )}
 
           {isSuccess ? (

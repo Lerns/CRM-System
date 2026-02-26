@@ -14,7 +14,6 @@ export const titleRules = [
   {
     required: true,
     message: 'Это поле не может быть пустым',
-    transform: trim,
   },
   {
     min: MIN_TITLE_LENGTH,
