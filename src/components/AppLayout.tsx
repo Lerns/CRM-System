@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+
 import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 
@@ -9,9 +10,9 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
   {
-    key: '/',
+    key: '/todo',
     label: (
-      <NavLink to="/" end>
+      <NavLink to="/todo" end>
         Список задач
       </NavLink>
     ),
@@ -26,7 +27,7 @@ const items: MenuItem[] = [
   },
 ];
 
-export const RootLayout = () => {
+export const AppLayout = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const location = useLocation();
 
@@ -40,14 +41,17 @@ export const RootLayout = () => {
           items={items}
         />
       </Sider>
+
       <Layout>
         <Header style={{ padding: 0 }} />
-        <Content>
+
+        <Content style={{ padding: 24 }}>
           <Outlet />
         </Content>
+
         <Footer />
       </Layout>
     </Layout>
   );
 };
-export default RootLayout;
+export default AppLayout;

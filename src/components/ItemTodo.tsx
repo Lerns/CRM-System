@@ -1,12 +1,13 @@
 import { useState, memo } from 'react';
 
-import { putTodo, deleteTodo } from '../api/http';
-import { errorMessage } from '../helpers/errorMessage';
+import { updateTodo, deleteTodo } from '../api/http';
+import { getErrorMessage } from '../helpers/errorMessage';
 import { titleRules } from '../helpers/validation';
 
-import type { Todo, Filter } from '../helpers/types';
+import type { Todo, Filter } from '../types/typesTodo';
 
-import { Button, Input, Card, Checkbox, Typography, Form, Flex } from 'antd';
+import { Button, Input, Checkbox, Typography, Form, Flex, List } from 'antd';
+import { notification } from 'antd';
 
 import {
   EditOutlined,
@@ -18,25 +19,25 @@ import {
 interface ItemTodoProps {
   todo: Todo;
   loadTodos: (filter?: Filter) => Promise<void>;
-  onError: (message: string) => void;
 }
 
-const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
+const ItemTodo = memo(({ todo, loadTodos }: ItemTodoProps) => {
   const [editText, setEditText] = useState<boolean>(false);
   const [form] = Form.useForm();
 
   const handleTodoSave = async (values: { title: string }) => {
     const title = values.title.trim();
     try {
-      await putTodo(todo.id, { title });
+      await updateTodo(todo.id, { title });
       setEditText(false);
       await loadTodos();
-      onError('');
     } catch (err: unknown) {
-      onError(errorMessage(err) || 'Ошибка при обновлении задачи');
+      notification.error({
+        message: 'Ошибка',
+        description: getErrorMessage(err) || 'Ошибка при обновлении задачи',
+      });
     }
   };
-
   const handleTodoEditStart = () => {
     setEditText(true);
   };
@@ -51,22 +52,28 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
       await deleteTodo(todo.id);
       await loadTodos();
     } catch (err: unknown) {
-      onError(errorMessage(err) || 'Ошибка при удалении задачи');
+      notification.error({
+        message: 'Ошибка',
+        description: getErrorMessage(err) || 'Ошибка при удалении задачи',
+      });
     }
   };
 
   const handleTodoToggle = async () => {
     try {
-      await putTodo(todo.id, { isDone: !todo.isDone });
+      await updateTodo(todo.id, { isDone: !todo.isDone });
       await loadTodos();
-      onError('');
     } catch (err: unknown) {
-      onError(errorMessage(err) || 'Ошибка при изменении статуса');
+      notification.error({
+        message: 'Ошибка',
+        description:
+          getErrorMessage(err) || 'Ошибка при обновлении статуса задачи',
+      });
     }
   };
 
   return (
-    <Card>
+    <List.Item>
       <Flex align="center" justify="space-between">
         <Flex align="center" gap="small" flex={1}>
           <Checkbox checked={todo.isDone} onChange={handleTodoToggle} />
@@ -83,21 +90,25 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
                   <Input />
                 </Form.Item>
 
-                <Button
-                  type="primary"
-                  size="small"
-                  htmlType="submit"
-                  icon={<SaveOutlined />}
-                />
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    size="small"
+                    htmlType="submit"
+                    icon={<SaveOutlined />}
+                  />
+                </Form.Item>
 
-                <Button
-                  type="primary"
-                  color="danger"
-                  variant="solid"
-                  size="small"
-                  icon={<CloseOutlined />}
-                  onClick={handleTodoEditCancel}
-                />
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    color="danger"
+                    variant="solid"
+                    size="small"
+                    icon={<CloseOutlined />}
+                    onClick={handleTodoEditCancel}
+                  />
+                </Form.Item>
               </Form>
             </>
           ) : (
@@ -123,7 +134,7 @@ const ItemTodo = memo(({ todo, loadTodos, onError }: ItemTodoProps) => {
           )}
         </Flex>
       </Flex>
-    </Card>
+    </List.Item>
   );
 });
 

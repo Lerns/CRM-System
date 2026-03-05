@@ -25,3 +25,5 @@ export interface MetaResponse<T, N> {
 }
 
 export type Filter = 'all' | 'inWork' | 'completed';
+
+export type AddTodoFormValues = { title: string };
