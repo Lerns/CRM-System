@@ -42,7 +42,7 @@ export default function TodoListPage() {
 
   return (
     <>
-      <TitleTodo loadTodos={loadTodos} onError={setError} />
+      <TitleTodo loadTodos={loadTodos} />
       <TodoFilter filter={filter} onFilterChange={setFilter} status={status} />
       {error && (
         <Error title="Ошибка" message={error} onClose={() => setError('')} />

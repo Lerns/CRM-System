@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { loginThunk } from '../thunks/loginThunk';
-import { ProfileRequest } from '../../../types/typesAuth';
+import { Profile } from '../../../types/typesAuth';
 import { fetchProfileThunk } from '../thunks/profileThunk';
 import { logoutThunk } from '../thunks/logoutThunk';
 import { initAppThunk } from '../thunks/initAppThunk';
@@ -8,7 +8,7 @@ import { registrationThunk } from '../thunks/registrationThunk';
 
 interface AuthState {
   isAuthorized: boolean;
-  user: ProfileRequest | null;
+  user: Profile | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
   registrationStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -46,6 +46,7 @@ const authSlice = createSlice({
       .addCase(loginThunk.fulfilled, (state) => {
         state.status = 'succeeded';
         state.isAuthorized = true;
+        state.error = null;
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.status = 'failed';
@@ -66,6 +67,8 @@ const authSlice = createSlice({
       .addCase(fetchProfileThunk.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload ?? 'Ошибка получения профиля';
+        state.isAuthorized = false;
+        state.user = null;
       })
       .addCase(logoutThunk.pending, (state) => {
         state.status = 'loading';
@@ -86,9 +89,8 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(initAppThunk.fulfilled, (state, action) => {
+      .addCase(initAppThunk.fulfilled, (state) => {
         state.status = 'succeeded';
-        state.isAuthorized = action.payload;
       })
       .addCase(initAppThunk.rejected, (state, action) => {
         state.status = 'failed';
@@ -100,7 +102,7 @@ const authSlice = createSlice({
         state.registrationStatus = 'loading';
         state.error = null;
       })
-      .addCase(registrationThunk.fulfilled, (state, action) => {
+      .addCase(registrationThunk.fulfilled, (state) => {
         state.registrationStatus = 'succeeded';
         state.error = null;
       })

@@ -50,7 +50,6 @@ api.interceptors.response.use(
         authTokenStore.setAccessToken(response.data.accessToken);
         localStorage.setItem('refreshToken', response.data.refreshToken);
         originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
-
         return api.request(originalRequest);
       } catch (err) {
         authTokenStore.clearAccessToken();

@@ -3,33 +3,44 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 
 import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
+import { usePermissions } from '../helpers/usePermissions';
 
 const { Header, Content, Footer, Sider } = Layout;
-
 type MenuItem = Required<MenuProps>['items'][number];
-
-const items: MenuItem[] = [
-  {
-    key: '/todo',
-    label: (
-      <NavLink to="/todo" end>
-        Список задач
-      </NavLink>
-    ),
-  },
-  {
-    key: '/profile',
-    label: (
-      <NavLink to="/profile" end>
-        Профиль
-      </NavLink>
-    ),
-  },
-];
-
 export const AppLayout = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const location = useLocation();
+  const { canModerate } = usePermissions();
+
+  const items: MenuItem[] = [
+    {
+      key: '/todo',
+      label: (
+        <NavLink to="/todo" end>
+          Список задач
+        </NavLink>
+      ),
+    },
+    {
+      key: '/profile',
+      label: (
+        <NavLink to="/profile" end>
+          Профиль
+        </NavLink>
+      ),
+    },
+  ];
+
+  if (canModerate) {
+    items.push({
+      key: '/users',
+      label: (
+        <NavLink to="/users" end>
+          Пользователи
+        </NavLink>
+      ),
+    });
+  }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>

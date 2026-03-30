@@ -2,19 +2,20 @@ import authTokenStore from '../../../api/authTokenStore';
 import { refreshTokenRequest } from '../../../api/auth';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getErrorMessage } from '../../../helpers/errorMessage';
+import { fetchProfileThunk } from './rolesThink';
 
 export const initAppThunk = createAsyncThunk<
-  boolean,
+  void,
   void,
   { rejectValue: string }
->('auth/initApp', async (_, { rejectWithValue }) => {
+>('auth/initApp', async (_, { dispatch, rejectWithValue }) => {
   try {
     const accessToken = authTokenStore.getAccessToken();
     const refreshToken = localStorage.getItem('refreshToken');
 
     if (!refreshToken) {
       authTokenStore.clearAccessToken();
-      return false;
+      throw new Error('refresh-токен не найден');
     }
 
     if (!accessToken) {
@@ -22,9 +23,11 @@ export const initAppThunk = createAsyncThunk<
       authTokenStore.setAccessToken(refreshResponse.accessToken);
       localStorage.setItem('refreshToken', refreshResponse.refreshToken);
     }
-    return true;
+
+    await dispatch(fetchProfileThunk()).unwrap();
   } catch (error: unknown) {
     authTokenStore.clearAccessToken();
+
     localStorage.removeItem('refreshToken');
 
     return rejectWithValue(getErrorMessage(error));

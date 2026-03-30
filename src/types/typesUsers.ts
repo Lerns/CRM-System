@@ -41,7 +41,7 @@ export interface UserRequest {
   phoneNumber?: string;
 }
 
-enum Roles {
+export enum Roles {
   ADMIN = 'ADMIN',
   MODERATOR = 'MODERATOR',
   USER = 'USER',

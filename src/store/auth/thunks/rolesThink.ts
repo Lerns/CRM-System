@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getProfile } from '../../../api/auth';
 import { getErrorMessage } from '../../../helpers/errorMessage';
 import { Profile } from '../../../types/typesAuth';
+import authTokenStore from '../../../api/authTokenStore';
 
 export const fetchProfileThunk = createAsyncThunk<
   Profile,
@@ -9,9 +10,11 @@ export const fetchProfileThunk = createAsyncThunk<
   { rejectValue: string }
 >('user/profile', async (_, { rejectWithValue }) => {
   try {
+    const token = authTokenStore.getAccessToken();
     const response = await getProfile();
     return response;
   } catch (error: unknown) {
-    return rejectWithValue(getErrorMessage(error));
+    const msg = getErrorMessage(error);
+    return rejectWithValue(msg);
   }
 });

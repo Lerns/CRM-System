@@ -10,6 +10,7 @@ import illustration from '../../../public/illustration.svg';
 import { clearError } from '../../store/auth/slices/authSlice';
 import Error from '../../components/Error';
 import { getErrorMessage } from '../../helpers/errorMessage';
+import { fetchProfileThunk } from '../../store/auth/thunks/rolesThink';
 
 const { Title, Text } = Typography;
 
@@ -23,6 +24,7 @@ export default function LoginPage() {
   const handleLogin = async (values: AuthData) => {
     try {
       await dispatch(loginThunk(values)).unwrap();
+      await dispatch(fetchProfileThunk()).unwrap();
       form.resetFields();
       navigate('/todo', { replace: true });
     } catch (err: unknown) {
