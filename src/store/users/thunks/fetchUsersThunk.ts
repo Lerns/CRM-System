@@ -9,6 +9,7 @@ type FetchUserParams = {
   page?: number;
   limit?: number;
   search?: string;
+  isBlocked?: boolean;
 };
 
 export const fetchUsersThunk = createAsyncThunk<

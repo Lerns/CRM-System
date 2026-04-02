@@ -10,6 +10,7 @@ import {
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { MoreOutlined } from '@ant-design/icons';
+import { FilterOutlined } from '@ant-design/icons';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -49,6 +50,7 @@ export default function UsersPage() {
   const meta = useAppSelector(selectUsersMeta);
 
   const isLoading = status === 'loading';
+
   const [filters, setFilters] = useState<UserFilters>({
     page: 1,
     limit: 20,
@@ -136,13 +138,14 @@ export default function UsersPage() {
   const handleEditRoles = (user: User) => {
     setEditingRoles({ id: user.id, roles: [...user.roles] });
   };
+
   const handleTableChange = (pagination: any, _: any, sorter: any) => {
     setFilters((prev) => ({
       ...prev,
       page: pagination.current,
       limit: pagination.pageSize,
       sortBy: sorter?.field ?? prev.sortBy,
-      sortOrder: sorter.order === 'ascend' ? 'asc' : 'desc',
+      sortOrder: sorter?.order === 'ascend' ? 'asc' : 'desc',
     }));
   };
 
@@ -202,7 +205,15 @@ export default function UsersPage() {
     },
     {
       title: 'Блокировка',
-      key: 'block',
+      dataIndex: 'isBlocked',
+      key: 'isBlocked',
+      sorter: true,
+      sortOrder:
+        filters.sortBy === 'isBlocked'
+          ? filters.sortOrder === 'asc'
+            ? 'ascend'
+            : 'descend'
+          : null,
       render: (_: any, user: User) => (
         <Switch
           checked={!user.isBlocked}
@@ -253,13 +264,58 @@ export default function UsersPage() {
   return (
     <div>
       <h2>Пользователи</h2>
-      <Input
-        placeholder="Поиск по имени или email"
-        style={{ marginBottom: 16, width: 300 }}
-        defaultValue={filters.search || ''}
-        onChange={(e) => handleSearchDebounced(e.target.value)}
-        allowClear
-      />
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: 12,
+          marginBottom: 16,
+        }}
+      >
+        <Input
+          placeholder="Поиск по имени или email"
+          style={{ width: 300 }}
+          defaultValue={filters.search || ''}
+          onChange={(e) => handleSearchDebounced(e.target.value)}
+          allowClear
+        />
+
+        <Dropdown
+          trigger={['click']}
+          menu={{
+            selectable: true,
+            selectedKeys: [
+              filters.isBlocked === undefined
+                ? 'all'
+                : filters.isBlocked
+                  ? 'blocked'
+                  : 'active',
+            ],
+            onClick: ({ key }) => {
+              setFilters((prev) => {
+                const next = { ...prev, page: 1 };
+
+                if (key === 'all') {
+                  const { isBlocked, ...rest } = next;
+                  return rest;
+                }
+
+                return {
+                  ...next,
+                  isBlocked: key === 'blocked',
+                };
+              });
+            },
+            items: [
+              { key: 'all', label: 'Все пользователи' },
+              { key: 'active', label: 'Только активные' },
+              { key: 'blocked', label: 'Только заблокированные' },
+            ],
+          }}
+        >
+          <Button icon={<FilterOutlined />}>Filter</Button>
+        </Dropdown>
+      </div>
       <Table<User>
         columns={columns}
         dataSource={users ?? []}

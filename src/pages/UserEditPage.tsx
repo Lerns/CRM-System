@@ -20,7 +20,7 @@ import {
 } from '../store/users/selectors';
 import { clearSelectedUser } from '../store/users/slices/usersSlice';
 import { userByIdThunk } from '../store/users/thunks/userByIdThunk';
-import { updateUserThunk } from '../store/users/thunks/updateUser';
+import { updateUserThunk } from '../store/users/thunks/updateUserThunk';
 import { UserRequest } from '../types/typesUsers';
 import { usernameRules, emailRules, phoneRules } from '../helpers/validation';
 

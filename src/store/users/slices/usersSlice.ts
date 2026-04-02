@@ -1,9 +1,10 @@
 import type { User } from '../../../types/typesUsers';
 import { createSlice } from '@reduxjs/toolkit';
+
 import { fetchUsersThunk } from '../thunks/fetchUsersThunk';
 import { deleteUserThunk } from '../thunks/deleteUserThunk';
 import { userByIdThunk } from '../thunks/userByIdThunk';
-import { updateUserThunk } from '../thunks/updateUser';
+import { updateUserThunk } from '../thunks/updateUserThunk';
 import { blockUserThunk, unblockUserThunk } from '../thunks/isBlockedUserThink';
 import { updateUserRightsThunk } from '../thunks/updateUserRightsThunk';
 

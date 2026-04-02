@@ -15,7 +15,7 @@ export const initAppThunk = createAsyncThunk<
 
     if (!refreshToken) {
       authTokenStore.clearAccessToken();
-      throw new Error('refresh-токен не найден');
+      return;
     }
 
     if (!accessToken) {
