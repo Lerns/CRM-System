@@ -79,9 +79,7 @@ export default function UsersPage() {
   );
 
   useEffect(() => {
-    return () => {
-      handleSearchDebounced.cancel();
-    };
+    return () => handleSearchDebounced.cancel();
   }, [handleSearchDebounced]);
 
   const handleOpenProfile = (userId: number) => {

@@ -23,7 +23,7 @@ export interface Profile {
   email: string;
   date: string;
   isBlocked: boolean;
-  roles: Role[];
+  roles: Roles[];
   phoneNumber: string;
 }
 
@@ -41,4 +41,3 @@ export interface Token {
   accessToken: string;
   refreshToken: string;
 }
-type Role = Roles;

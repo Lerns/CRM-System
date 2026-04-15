@@ -37,7 +37,7 @@ export function UserEditPage() {
   const isLoading = status === 'loading';
 
   const [form] = Form.useForm<UserRequest>();
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   useEffect(() => {
     if (!id || isNaN(userId)) {
