@@ -1,3 +1,5 @@
+import { Roles } from './typesUsers';
+
 export interface UserRegistration {
   login: string;
   username: string;
@@ -21,6 +23,7 @@ export interface Profile {
   email: string;
   date: string;
   isBlocked: boolean;
+  roles: Roles[];
   phoneNumber: string;
 }
 

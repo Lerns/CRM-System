@@ -1,18 +1,25 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { clearError } from '../../store/auth/slices/authSlice';
-import Error from '../../components/Error';
-import { Button, Card, Space, Typography } from 'antd';
 import { logoutThunk } from '../../store/auth/thunks/logoutThunk';
 import { fetchProfileThunk } from '../../store/auth/thunks/profileThunk';
+import {
+  selectAuthError,
+  selectAuthStatus,
+  selectUserProfile,
+} from '../../store/auth/selectors';
+import { Button, Card, Space, Typography, Spin, notification } from 'antd';
+import Error from '../../components/Error';
 import { getErrorMessage } from '../../helpers/errorMessage';
 
 export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { user, status, error } = useAppSelector((state) => state.auth);
+
+  const user = useAppSelector(selectUserProfile);
+  const status = useAppSelector(selectAuthStatus);
+  const error = useAppSelector(selectAuthError);
 
   useEffect(() => {
     if (!user && status !== 'loading') {
@@ -25,49 +32,52 @@ export default function ProfilePage() {
       await dispatch(logoutThunk()).unwrap();
       navigate('/login', { replace: true });
     } catch (err: unknown) {
-      getErrorMessage(err);
+      notification.error({
+        message: 'Ошибка',
+        description: getErrorMessage(err) || 'Ошибка при выходе из профиля',
+      });
     }
   };
 
+  if (status === 'loading') {
+    return <Spin tip="Загрузка пользователя..." />;
+  }
+
+  if (error) {
+    return (
+      <Card title="Профиль" style={{ width: 500 }}>
+        <Error message={error} onClose={() => dispatch(clearError())} />
+      </Card>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Card title="Профиль" style={{ width: 500 }}>
+        <Typography.Text>Профиль не загружен</Typography.Text>
+        <Button type="primary" onClick={() => navigate('/login')}>
+          Войдите заново
+        </Button>
+      </Card>
+    );
+  }
+
   return (
     <Card title="Профиль" style={{ width: 500 }}>
-      {status === 'loading' ? (
-        <Typography.Text>Загрузка профиля...</Typography.Text>
-      ) : error ? (
-        <Error message={error} onClose={() => dispatch(clearError())} />
-      ) : !user ? (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Typography.Text>Профиль не загружен</Typography.Text>
-          <Button type="primary" onClick={() => navigate('/login')}>
-            Войдите заного
-          </Button>
-        </div>
-      ) : (
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <Typography.Text strong>Имя пользователя:</Typography.Text>
-          <Typography.Text>{user.username}</Typography.Text>
+      <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <Typography.Text strong>Имя пользователя:</Typography.Text>
+        <Typography.Text>{user.username}</Typography.Text>
 
-          <Typography.Text strong>Email:</Typography.Text>
-          <Typography.Text>{user.email}</Typography.Text>
+        <Typography.Text strong>Email:</Typography.Text>
+        <Typography.Text>{user.email}</Typography.Text>
 
-          <Typography.Text strong>Телефон:</Typography.Text>
-          <Typography.Text>{user.phoneNumber || 'Не указан'}</Typography.Text>
+        <Typography.Text strong>Телефон:</Typography.Text>
+        <Typography.Text>{user.phoneNumber || 'Не указан'}</Typography.Text>
 
-          <Button
-            type="primary"
-            onClick={handleLogout}
-            style={{ marginTop: 16 }}
-          >
-            Выйти
-          </Button>
-        </Space>
-      )}
+        <Button type="primary" onClick={handleLogout} style={{ marginTop: 16 }}>
+          Выйти
+        </Button>
+      </Space>
     </Card>
   );
 }
